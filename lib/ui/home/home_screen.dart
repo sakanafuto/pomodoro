@@ -54,10 +54,60 @@ class HomeScreen extends HookConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(
           context,
-          SizeRoute(page: AddTimerScreen()),
-          // CupertinoPageRoute(
-          //   builder: (_) => AddTimerScreen(),
-          // ),
+          SizeRoute(
+            page: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                height: 1000,
+                width: 1000,
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: SafeArea(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            color: Colors.grey.shade100,
+                            margin: const EdgeInsets.all(16.0),
+                            child: TextButton(
+                              onPressed: () => {},
+                              child: const Text("とりあえず集中"),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            color: Colors.grey.shade100,
+                            margin: const EdgeInsets.all(16.0),
+                            child: TextButton(
+                              onPressed: () => Navigator.push(
+                                context,
+                                SizeRoute(
+                                  page: GestureDetector(
+                                    onTap: () => Navigator.popUntil(
+                                        context, (route) => route.isFirst),
+                                    child: Center(
+                                      child: AddTimerScreen(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              child: const Text("集中する仕事を決める"),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
         child: const Icon(Icons.add_alarm),
       ),
