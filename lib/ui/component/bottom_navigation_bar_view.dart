@@ -28,7 +28,7 @@ class BottomNavigationBarView extends ConsumerWidget {
       home: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: Text("Taste that's Simple Pomodoro"),
+          title: Text("🥺 Taste that's Simple Pomodoro"),
         ),
         body: _pages[ref.watch(appTabTypeProvider).index],
         bottomNavigationBar: BottomNavigationBar(
@@ -53,13 +53,14 @@ class BottomNavigationBarView extends ConsumerWidget {
                 AppTabType.values[selectIndex];
           },
         ),
-        drawer: _drawer(),
+        drawer: _drawer(context),
       ),
     );
   }
 
-  Widget _drawer() {
+  Widget _drawer(BuildContext context) {
     return Drawer(
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       child: Center(
         child: Text("Simple Drawer"),
       ),

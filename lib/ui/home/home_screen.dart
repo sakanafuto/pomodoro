@@ -1,9 +1,10 @@
 import 'dart:async';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
 final timerProvider = StateProvider<DateTime>((ref) => DateTime.utc(0, 0, 0));
 
@@ -50,6 +51,34 @@ class HomeScreen extends HookConsumerWidget {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+          context,
+          SizeRoute(page: AddTimerScreen()),
+          // CupertinoPageRoute(
+          //   builder: (_) => AddTimerScreen(),
+          // ),
+        ),
+        child: const Icon(Icons.add_alarm),
+      ),
     );
   }
+}
+
+class SizeRoute extends PageRouteBuilder {
+  final Widget page;
+  SizeRoute({required this.page})
+      : super(
+          transitionDuration: const Duration(milliseconds: 200),
+          reverseTransitionDuration: const Duration(milliseconds: 200),
+          pageBuilder: (BuildContext context, Animation<double> animation,
+              secondaryAnimation) {
+            return page;
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return Align(
+              child: SizeTransition(sizeFactor: animation, child: child),
+            );
+          },
+        );
 }
