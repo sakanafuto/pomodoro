@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pomodoro/ui/home/home_screen.dart';
+import 'package:pomodoro/ui/timer/timer_list_screen.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -15,7 +16,7 @@ class BottomNavigationBarView extends ConsumerWidget {
   BottomNavigationBarView({Key? key}) : super(key: key);
 
   final _pages = [
-    const Text("no"),
+    TimerListScreen(),
     HomeScreen(),
     const Text("no2"),
   ];
@@ -34,16 +35,16 @@ class BottomNavigationBarView extends ConsumerWidget {
           type: BottomNavigationBarType.shifting,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.no_accounts),
-              label: "null",
+              icon: Icon(Icons.view_list),
+              label: "",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
+              icon: Icon(Icons.hourglass_empty_outlined),
+              label: "",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.no_accounts),
-              label: "null",
+              icon: Icon(Icons.today),
+              label: "",
             ),
           ],
           currentIndex: ref.watch(appTabTypeProvider).index,
