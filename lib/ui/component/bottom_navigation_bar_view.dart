@@ -16,7 +16,7 @@ class BottomNavigationBarView extends ConsumerWidget {
 
   final _pages = [
     const Text("no"),
-    const HomeScreen(),
+    HomeScreen(),
     const Text("no2"),
   ];
 

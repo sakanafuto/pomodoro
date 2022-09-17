@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: AppThemeData.mainThemeData,
       title: 'GreedApp',
       home: Scaffold(
-        body: const HomeScreen(),
+        body: HomeScreen(),
         bottomNavigationBar: BottomNavigationBarView(),
       ),
     );
