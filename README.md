@@ -7,3 +7,16 @@ A new Flutter project.
 ```shell
 $ fvm use
 ```
+
+## Commit message prefix
+
+```
+🎉 initial commit
+✨ feature
+🐛 fix
+♻️ refactor
+⚡️ performans
+📚 documents
+🧪 test
+🚧 wip
+```
