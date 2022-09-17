@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pomodoro/ui/home/home_screen.dart';
+import 'package:pomodoro/ui/timer/timer_list_screen.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -15,8 +16,8 @@ class BottomNavigationBarView extends ConsumerWidget {
   BottomNavigationBarView({Key? key}) : super(key: key);
 
   final _pages = [
-    const Text("no"),
-    const HomeScreen(),
+    TimerListScreen(),
+    HomeScreen(),
     const Text("no2"),
   ];
 
@@ -27,23 +28,23 @@ class BottomNavigationBarView extends ConsumerWidget {
       home: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: Text("Taste that's Simple Pomodoro"),
+          title: Text("🥺 Taste that's Simple Pomodoro"),
         ),
         body: _pages[ref.watch(appTabTypeProvider).index],
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.shifting,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.no_accounts),
-              label: "null",
+              icon: Icon(Icons.view_list),
+              label: "",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "Home",
+              icon: Icon(Icons.hourglass_empty_outlined),
+              label: "",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.no_accounts),
-              label: "null",
+              icon: Icon(Icons.today),
+              label: "",
             ),
           ],
           currentIndex: ref.watch(appTabTypeProvider).index,
@@ -52,13 +53,14 @@ class BottomNavigationBarView extends ConsumerWidget {
                 AppTabType.values[selectIndex];
           },
         ),
-        drawer: _drawer(),
+        drawer: _drawer(context),
       ),
     );
   }
 
-  Widget _drawer() {
+  Widget _drawer(BuildContext context) {
     return Drawer(
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       child: Center(
         child: Text("Simple Drawer"),
       ),
