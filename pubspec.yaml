@@ -33,6 +33,7 @@ dependencies:
   google_fonts: ^3.0.1
   hooks_riverpod: ^1.0.4
   intl: ^0.17.0
+  percent_indicator: ^4.0.1
 
 dev_dependencies:
 

@@ -1,31 +1,88 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
-final timerProvider = StateProvider<DateTime>((ref) => DateTime.utc(0, 0, 0));
+final percentProvider = StateProvider<double>((ref) => 0);
+final timeInMinProvider = StateProvider<int>((ref) => 25);
+final timeInSecProvider =
+    StateProvider<int>((ref) => ref.watch(timeInMinProvider) * 60);
+final secPercentProvider =
+    StateProvider<double>((ref) => ref.watch(timeInSecProvider) / 100);
 
 class HomeScreen extends HookConsumerWidget {
   HomeScreen({Key? key}) : super(key: key);
 
   late Timer _timer;
 
+  void _startTimer(ref, time, secPercent) {
+    // int timeInMinut = 25;
+    // int time = timeInMinut * 60;
+    // double secPercent = (time / 100);
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (Timer timer) {
+        if (time > 0) {
+          ref.read(timeInSecProvider.notifier).state--;
+          if (time % 60 == 0) {
+            ref.read(timeInMinProvider.notifier).state--;
+            if (time % secPercent == 0) {
+              ref.read(percentProvider.notifier).state += 0.01;
+            } else {
+              ref.read(percentProvider.notifier).state = 1;
+            }
+          }
+        } else {
+          ref.read(percentProvider.notifier).state = 0;
+          ref.read(timeInMinProvider.notifier).state = 25;
+          timer.cancel();
+        }
+        //   ref.watch(timerProvider.notifier).update(
+        //         (state) => state.add(
+        //           const Duration(seconds: 1),
+        //         ),
+        //       );
+        // }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final percent = ref.watch(percentProvider);
+    final time = ref.watch(timeInSecProvider);
+    final secPercent = ref.watch(secPercentProvider);
     initializeDateFormatting('ja');
-    final time = ref.watch(timerProvider);
+    // final time = ref.watch(timerProvider);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Center(
-            child: Text(
-              DateFormat.Hms('ja').format(time),
-              style: Theme.of(context).textTheme.headline2,
+            child: Expanded(
+              child: CircularPercentIndicator(
+                circularStrokeCap: CircularStrokeCap.round,
+                percent: percent,
+                animation: true,
+                animateFromLastPercent: true,
+                radius: 250.0,
+                lineWidth: 20.0,
+                progressColor: Colors.black,
+                center: Text(
+                  '$time',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 80.0,
+                  ),
+                ),
+              ),
             ),
+            // child: Text(
+            //   DateFormat.Hms('ja').format(time),
+            //   style: Theme.of(context).textTheme.headline2,
+            // ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -34,18 +91,7 @@ class HomeScreen extends HookConsumerWidget {
                   onPressed: () => _timer.isActive ? _timer.cancel() : null,
                   child: const Text("stop")),
               ElevatedButton(
-                  onPressed: () {
-                    _timer = Timer.periodic(
-                      const Duration(seconds: 1),
-                      (Timer timer) {
-                        ref.watch(timerProvider.notifier).update(
-                              (state) => state.add(
-                                const Duration(seconds: 1),
-                              ),
-                            );
-                      },
-                    );
-                  },
+                  onPressed: () => _startTimer(ref, time, secPercent),
                   child: const Text("start")),
             ],
           ),
@@ -91,7 +137,7 @@ class HomeScreen extends HookConsumerWidget {
                                   page: GestureDetector(
                                     onTap: () => Navigator.popUntil(
                                         context, (route) => route.isFirst),
-                                    child: Center(
+                                    child: const Center(
                                       child: AddTimerScreen(),
                                     ),
                                   ),
