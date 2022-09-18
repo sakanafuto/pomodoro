@@ -4,7 +4,9 @@ import 'package:pomodoro/ui/timer/timer_list_screen.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final appTabTypeProvider = StateProvider<AppTabType>((ref) => AppTabType.home);
+final appTabTypeProvider =
+    StateProvider.autoDispose<AppTabType>((ref) => AppTabType.home);
+// final isTabTapProvider = StateProvider<bool>((ref) => false);
 
 enum AppTabType {
   no,
@@ -17,7 +19,7 @@ class BottomNavigationBarView extends ConsumerWidget {
 
   final _pages = [
     TimerListScreen(),
-    HomeScreen(),
+    const HomeScreen(),
     const Text("no2"),
   ];
 
@@ -48,7 +50,10 @@ class BottomNavigationBarView extends ConsumerWidget {
             ),
           ],
           currentIndex: ref.watch(appTabTypeProvider).index,
-          onTap: (selectIndex) {
+          onTap: (selectIndex) async {
+            ref.watch(timerProvider.notifier).state.cancel();
+            // ref.watch(isTabTapProvider.notifier).state = true;
+            // await Future.delayed(const Duration(milliseconds: 1500));
             ref.watch(appTabTypeProvider.notifier).state =
                 AppTabType.values[selectIndex];
           },

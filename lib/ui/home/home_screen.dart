@@ -1,50 +1,92 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+// import 'package:pomodoro/ui/component/bottom_navigation_bar_view.dart';
 import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
 final percentProvider = StateProvider<double>((ref) => 0);
-final timeInMinProvider = StateProvider<int>((ref) => 25);
-final timeInSecProvider =
-    StateProvider<int>((ref) => ref.watch(timeInMinProvider) * 60);
-final secPercentProvider =
-    StateProvider<double>((ref) => ref.watch(timeInSecProvider) / 100);
+// final timeInMinProvider = StateProvider<int>((ref) => 1);
+final timeInSecProvider = StateProvider<int>((ref) => 60);
+final secPercentProvider = StateProvider<double>(
+    (ref) => ref.read(timeInSecProvider.notifier).state / 100);
+
+/// providerにする必要なかったかも
+final timerProvider = StateProvider<Timer>(
+    (ref) => Timer.periodic(const Duration(seconds: 1), (Timer timer) {}));
 
 class HomeScreen extends HookConsumerWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
-  late Timer _timer;
+//   @override
+//   HomeScreenState createState() => HomeScreenState();
+// }
 
-  void _startTimer(ref, time, secPercent) {
-    // int timeInMinut = 25;
-    // int time = timeInMinut * 60;
-    // double secPercent = (time / 100);
-    _timer = Timer.periodic(
+// class HomeScreenState extends ConsumerState<HomeScreen> {
+//   @override
+//   void dispose() {
+//     /// 画面遷移時、Disposeすることでエラーにはならない
+//     /// だがアプリ的にはタイマーは動いていてほしいのでToDoである
+//     ref.watch(timerProvider.notifier).state.cancel();
+//     super.dispose();
+//   }
+
+  /// タイマーのロジック
+  void _startTimer(WidgetRef ref) {
+    // final tabTap = ref.watch(isTabTapProvider);
+    const ps = 1.0 / 60;
+    double psCount = 0.0;
+
+    ref.watch(timerProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
       (Timer timer) {
-        if (time > 0) {
-          ref.read(timeInSecProvider.notifier).state--;
-          if (time % 60 == 0) {
-            ref.read(timeInMinProvider.notifier).state--;
-            if (time % secPercent == 0) {
-              ref.read(percentProvider.notifier).state += 0.01;
-            } else {
-              ref.read(percentProvider.notifier).state = 1;
-            }
-          }
-        } else {
-          ref.read(percentProvider.notifier).state = 0;
-          ref.read(timeInMinProvider.notifier).state = 25;
-          timer.cancel();
+        // tabTap
+        //     ? {
+        //         ref.watch(isTabTapProvider.notifier).state = false,
+        //         ref.watch(timerProvider.notifier).state.cancel(),
+        //       }
+        //     :
+        {
+          ref.watch(timeInSecProvider) > 0
+              ? {
+                  /// 毎秒カウントダウン
+                  ref.watch(timeInSecProvider.notifier).state--,
+
+                  /// タイマーが動いている間
+                  ref.watch(timeInSecProvider) > 0.0
+                      ? {
+                          // ref.watch(timeInMinProvider.notifier).state--,
+
+                          /// secPercentが1を超えない間
+                          ref.watch(timeInSecProvider) %
+                                      ref.watch(secPercentProvider) <
+                                  1
+                              ? {
+                                  psCount += ps,
+
+                                  /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
+                                  psCount < 1.0
+                                      ? ref
+                                          .watch(percentProvider.notifier)
+                                          .state += ps
+                                      : {
+                                          ref
+                                              .watch(percentProvider.notifier)
+                                              .state = 0.0,
+                                          psCount = 0,
+                                        }
+                                }
+                              : null,
+                        }
+                      : {
+                          ref.watch(percentProvider.notifier).state = 0.0,
+                          ref.watch(timeInSecProvider.notifier).state = 60,
+                          timer.cancel(),
+                        },
+                }
+              : null;
         }
-        //   ref.watch(timerProvider.notifier).update(
-        //         (state) => state.add(
-        //           const Duration(seconds: 1),
-        //         ),
-        //       );
-        // }
+        ;
       },
     );
   }
@@ -52,46 +94,47 @@ class HomeScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final percent = ref.watch(percentProvider);
-    final time = ref.watch(timeInSecProvider);
+    final timeInSec = ref.watch(timeInSecProvider);
+    // final timeInMin = ref.watch(timeInMinProvider);
     final secPercent = ref.watch(secPercentProvider);
-    initializeDateFormatting('ja');
-    // final time = ref.watch(timerProvider);
+
+    final int min = timeInSec ~/ 60;
+    final int sec = timeInSec - (min * 60);
+
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(
-            child: Expanded(
-              child: CircularPercentIndicator(
-                circularStrokeCap: CircularStrokeCap.round,
-                percent: percent,
-                animation: true,
-                animateFromLastPercent: true,
-                radius: 250.0,
-                lineWidth: 20.0,
-                progressColor: Colors.black,
-                center: Text(
-                  '$time',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 80.0,
-                  ),
+          Container(
+            width: 200,
+            child: CircularPercentIndicator(
+              circularStrokeCap: CircularStrokeCap.butt,
+              percent: percent,
+              animation: true,
+              animateFromLastPercent: true,
+              radius: 120.0,
+              lineWidth: 8.0,
+              progressColor: Colors.amber.shade600,
+              center: Text(
+                "$min : $sec",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 40.0,
                 ),
               ),
             ),
-            // child: Text(
-            //   DateFormat.Hms('ja').format(time),
-            //   style: Theme.of(context).textTheme.headline2,
-            // ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                  onPressed: () => _timer.isActive ? _timer.cancel() : null,
+                  onPressed: () =>
+                      ref.watch(timerProvider.notifier).state.isActive
+                          ? ref.watch(timerProvider.notifier).state.cancel()
+                          : null,
                   child: const Text("stop")),
               ElevatedButton(
-                  onPressed: () => _startTimer(ref, time, secPercent),
+                  onPressed: () => _startTimer(ref),
                   child: const Text("start")),
             ],
           ),
