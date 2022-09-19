@@ -19,7 +19,7 @@ class BottomNavigationBarView extends ConsumerWidget {
 
   final _pages = [
     TimerListScreen(),
-    const HomeScreen(),
+    HomeScreen(),
     const Text("no2"),
   ];
 
@@ -50,11 +50,9 @@ class BottomNavigationBarView extends ConsumerWidget {
             ),
           ],
           currentIndex: ref.watch(appTabTypeProvider).index,
-          onTap: (selectIndex) async {
-            ref.watch(timerProvider.notifier).state.cancel();
-            // ref.watch(isTabTapProvider.notifier).state = true;
-            // await Future.delayed(const Duration(milliseconds: 1500));
-            ref.watch(appTabTypeProvider.notifier).state =
+          onTap: (selectIndex) {
+            // ref.watch(timerProvider.notifier).state.cancel();
+            ref.read(appTabTypeProvider.notifier).state =
                 AppTabType.values[selectIndex];
           },
         ),

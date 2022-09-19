@@ -7,7 +7,7 @@ import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
 final percentProvider = StateProvider<double>((ref) => 0);
 // final timeInMinProvider = StateProvider<int>((ref) => 1);
-final timeInSecProvider = StateProvider<int>((ref) => 60);
+final timeInSecProvider = StateProvider<int>((ref) => 1500);
 final secPercentProvider = StateProvider<double>(
     (ref) => ref.read(timeInSecProvider.notifier).state / 100);
 
@@ -15,88 +15,80 @@ final secPercentProvider = StateProvider<double>(
 final timerProvider = StateProvider<Timer>(
     (ref) => Timer.periodic(const Duration(seconds: 1), (Timer timer) {}));
 
-class HomeScreen extends HookConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulHookConsumerWidget {
 
-//   @override
-//   HomeScreenState createState() => HomeScreenState();
-// }
+    @override
+  HomeScreenState createState() => HomeScreenState();
+}
 
-// class HomeScreenState extends ConsumerState<HomeScreen> {
-//   @override
-//   void dispose() {
-//     /// 画面遷移時、Disposeすることでエラーにはならない
-//     /// だがアプリ的にはタイマーは動いていてほしいのでToDoである
-//     ref.watch(timerProvider.notifier).state.cancel();
-//     super.dispose();
-//   }
+class HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    /// 画面遷移時、Disposeすることでエラーにはならない
+    /// だがアプリ的にはタイマーは動いていてほしいのでToDoである
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
 
   /// タイマーのロジック
-  void _startTimer(WidgetRef ref) {
-    // final tabTap = ref.watch(isTabTapProvider);
-    const ps = 1.0 / 60;
+  void _startTimer(WidgetRef ref) async {
+    const ps = 1.0 / 1500;
     double psCount = 0.0;
 
-    ref.watch(timerProvider.notifier).state = Timer.periodic(
+    ref.read(timerProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
       (Timer timer) {
-        // tabTap
-        //     ? {
-        //         ref.watch(isTabTapProvider.notifier).state = false,
-        //         ref.watch(timerProvider.notifier).state.cancel(),
-        //       }
-        //     :
-        {
-          ref.watch(timeInSecProvider) > 0
-              ? {
-                  /// 毎秒カウントダウン
-                  ref.watch(timeInSecProvider.notifier).state--,
+        ref.read(timeInSecProvider) > 0
+            ? {
+                /// 毎秒カウントダウン
+                ref.watch(timeInSecProvider.notifier).state--,
 
-                  /// タイマーが動いている間
-                  ref.watch(timeInSecProvider) > 0.0
-                      ? {
-                          // ref.watch(timeInMinProvider.notifier).state--,
+                /// タイマーが動いている間
+                ref.watch(timeInSecProvider) > 0.0
+                    ? {
+                        /// secPercentが1を超えない間
+                        ref.watch(timeInSecProvider) %
+                                    ref.watch(secPercentProvider) <
+                                1
+                            ? {
+                                psCount += ps,
 
-                          /// secPercentが1を超えない間
-                          ref.watch(timeInSecProvider) %
-                                      ref.watch(secPercentProvider) <
-                                  1
-                              ? {
-                                  psCount += ps,
-
-                                  /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
-                                  psCount < 1.0
-                                      ? ref
-                                          .watch(percentProvider.notifier)
-                                          .state += ps
-                                      : {
-                                          ref
-                                              .watch(percentProvider.notifier)
-                                              .state = 0.0,
-                                          psCount = 0,
-                                        }
-                                }
-                              : null,
-                        }
-                      : {
-                          ref.watch(percentProvider.notifier).state = 0.0,
-                          ref.watch(timeInSecProvider.notifier).state = 60,
-                          timer.cancel(),
-                        },
-                }
-              : null;
-        }
-        ;
+                                /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
+                                psCount < 1.0
+                                    ? ref
+                                        .watch(percentProvider.notifier)
+                                        .state += ps
+                                    : {
+                                        ref
+                                            .watch(percentProvider.notifier)
+                                            .state = 0.0,
+                                        psCount = 0,
+                                      }
+                              }
+                            : null,
+                      }
+                    : {
+                        ref.watch(percentProvider.notifier).state = 0.0,
+                        ref.watch(timeInSecProvider.notifier).state = 60,
+                        timer.cancel(),
+                      },
+              }
+            : null;
       },
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final percent = ref.watch(percentProvider);
     final timeInSec = ref.watch(timeInSecProvider);
-    // final timeInMin = ref.watch(timeInMinProvider);
-    final secPercent = ref.watch(secPercentProvider);
 
     final int min = timeInSec ~/ 60;
     final int sec = timeInSec - (min * 60);
