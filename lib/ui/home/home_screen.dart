@@ -7,7 +7,7 @@ import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
 final percentProvider = StateProvider<double>((ref) => 0);
 // final timeInMinProvider = StateProvider<int>((ref) => 1);
-final timeInSecProvider = StateProvider<int>((ref) => 60);
+final timeInSecProvider = StateProvider<int>((ref) => 300);
 final secPercentProvider = StateProvider<double>(
     (ref) => ref.read(timeInSecProvider.notifier).state / 100);
 
@@ -15,88 +15,78 @@ final secPercentProvider = StateProvider<double>(
 final timerProvider = StateProvider<Timer>(
     (ref) => Timer.periodic(const Duration(seconds: 1), (Timer timer) {}));
 
-class HomeScreen extends HookConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulHookConsumerWidget {
+  @override
+  HomeScreenState createState() => HomeScreenState();
+}
 
-//   @override
-//   HomeScreenState createState() => HomeScreenState();
-// }
+class HomeScreenState extends ConsumerState<HomeScreen>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
-// class HomeScreenState extends ConsumerState<HomeScreen> {
-//   @override
-//   void dispose() {
-//     /// 画面遷移時、Disposeすることでエラーにはならない
-//     /// だがアプリ的にはタイマーは動いていてほしいのでToDoである
-//     ref.watch(timerProvider.notifier).state.cancel();
-//     super.dispose();
-//   }
+  @override
+  void dispose() {
+    /// 画面遷移時、Disposeすることでエラーにはならない
+    /// だがアプリ的にはタイマーは動いていてほしいのでToDoである
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   /// タイマーのロジック
-  void _startTimer(WidgetRef ref) {
-    // final tabTap = ref.watch(isTabTapProvider);
-    const ps = 1.0 / 60;
+  void _startTimer(WidgetRef ref) async {
+    const ps = 1.0 / 300;
     double psCount = 0.0;
-
-    ref.watch(timerProvider.notifier).state = Timer.periodic(
+    ref.read(timerProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
       (Timer timer) {
-        // tabTap
-        //     ? {
-        //         ref.watch(isTabTapProvider.notifier).state = false,
-        //         ref.watch(timerProvider.notifier).state.cancel(),
-        //       }
-        //     :
-        {
-          ref.watch(timeInSecProvider) > 0
-              ? {
-                  /// 毎秒カウントダウン
-                  ref.watch(timeInSecProvider.notifier).state--,
+        ref.read(timeInSecProvider) > 0
+            ? {
+                /// 毎秒カウントダウン
+                ref.watch(timeInSecProvider.notifier).state--,
 
-                  /// タイマーが動いている間
-                  ref.watch(timeInSecProvider) > 0.0
-                      ? {
-                          // ref.watch(timeInMinProvider.notifier).state--,
+                /// タイマーが動いている間
+                ref.watch(timeInSecProvider) > 0.0
+                    ? {
+                        /// secPercentが1を超えない間
+                        ref.watch(timeInSecProvider) %
+                                    ref.watch(secPercentProvider) <
+                                1
+                            ? {
+                                psCount += ps,
 
-                          /// secPercentが1を超えない間
-                          ref.watch(timeInSecProvider) %
-                                      ref.watch(secPercentProvider) <
-                                  1
-                              ? {
-                                  psCount += ps,
-
-                                  /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
-                                  psCount < 1.0
-                                      ? ref
-                                          .watch(percentProvider.notifier)
-                                          .state += ps
-                                      : {
-                                          ref
-                                              .watch(percentProvider.notifier)
-                                              .state = 0.0,
-                                          psCount = 0,
-                                        }
-                                }
-                              : null,
-                        }
-                      : {
-                          ref.watch(percentProvider.notifier).state = 0.0,
-                          ref.watch(timeInSecProvider.notifier).state = 60,
-                          timer.cancel(),
-                        },
-                }
-              : null;
-        }
-        ;
+                                /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
+                                psCount < 1.0
+                                    ? ref
+                                        .watch(percentProvider.notifier)
+                                        .state += ps
+                                    : {
+                                        ref
+                                            .watch(percentProvider.notifier)
+                                            .state = 0.0,
+                                        psCount = 0,
+                                      }
+                              }
+                            : null,
+                      }
+                    : {
+                        ref.watch(percentProvider.notifier).state = 0.0,
+                        ref.watch(timeInSecProvider.notifier).state = 60,
+                        timer.cancel(),
+                      },
+              }
+            : null;
       },
     );
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final percent = ref.watch(percentProvider);
     final timeInSec = ref.watch(timeInSecProvider);
-    // final timeInMin = ref.watch(timeInMinProvider);
-    final secPercent = ref.watch(secPercentProvider);
 
     final int min = timeInSec ~/ 60;
     final int sec = timeInSec - (min * 60);
@@ -114,7 +104,7 @@ class HomeScreen extends HookConsumerWidget {
               animateFromLastPercent: true,
               radius: 120.0,
               lineWidth: 8.0,
-              progressColor: Colors.amber.shade600,
+              progressColor: Theme.of(context).colorScheme.primary,
               center: Text(
                 "$min : $sec",
                 style: const TextStyle(
@@ -141,65 +131,70 @@ class HomeScreen extends HookConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          SizeRoute(
-            page: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                height: 1000,
-                width: 1000,
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: SafeArea(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            color: Colors.grey.shade100,
-                            margin: const EdgeInsets.all(16.0),
-                            child: TextButton(
-                              onPressed: () => {},
-                              child: const Text("とりあえず集中"),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            color: Colors.grey.shade100,
-                            margin: const EdgeInsets.all(16.0),
-                            child: TextButton(
-                              onPressed: () => Navigator.push(
-                                context,
-                                SizeRoute(
-                                  page: GestureDetector(
-                                    onTap: () => Navigator.popUntil(
-                                        context, (route) => route.isFirst),
-                                    child: const Center(
-                                      child: AddTimerScreen(),
-                                    ),
+          onPressed: () => Navigator.push(
+                context,
+                SizeRoute(
+                  page: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      height: 1000,
+                      width: 1000,
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      child: SafeArea(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  color: Colors.grey.shade100,
+                                  margin: const EdgeInsets.all(16.0),
+                                  child: TextButton(
+                                    onPressed: () => {},
+                                    child: const Text("とりあえず集中"),
                                   ),
                                 ),
-                              ),
-                              child: const Text("集中する仕事を決める"),
+                              ],
                             ),
-                          ),
-                        ],
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  color: Colors.grey.shade100,
+                                  margin: const EdgeInsets.all(16.0),
+                                  child: TextButton(
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      SizeRoute(
+                                        page: GestureDetector(
+                                          onTap: () => Navigator.popUntil(
+                                              context,
+                                              (route) => route.isFirst),
+                                          child: const Center(
+                                            child: AddTimerScreen(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    child: const Text("集中する仕事を決める"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-        ),
-        child: const Icon(Icons.add_alarm),
-      ),
+          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+          // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          mini: true,
+          child: const Icon(
+            Icons.add_alarm,
+          )),
     );
   }
 }
