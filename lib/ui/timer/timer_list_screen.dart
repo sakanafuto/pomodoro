@@ -18,7 +18,7 @@ class TimerListScreen extends HookConsumerWidget {
 
   Widget _buildTimerList(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.background,
+      // color: Theme.of(context).colorScheme.primaryContainer,
       margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       elevation: 3,
       child: InkWell(

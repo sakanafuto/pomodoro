@@ -7,7 +7,7 @@ import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
 final percentProvider = StateProvider<double>((ref) => 0);
 // final timeInMinProvider = StateProvider<int>((ref) => 1);
-final timeInSecProvider = StateProvider<int>((ref) => 1500);
+final timeInSecProvider = StateProvider<int>((ref) => 300);
 final secPercentProvider = StateProvider<double>(
     (ref) => ref.read(timeInSecProvider.notifier).state / 100);
 
@@ -16,12 +16,12 @@ final timerProvider = StateProvider<Timer>(
     (ref) => Timer.periodic(const Duration(seconds: 1), (Timer timer) {}));
 
 class HomeScreen extends StatefulHookConsumerWidget {
-
-    @override
+  @override
   HomeScreenState createState() => HomeScreenState();
 }
 
-class HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObserver {
+class HomeScreenState extends ConsumerState<HomeScreen>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -36,12 +36,10 @@ class HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObser
     super.dispose();
   }
 
-
   /// タイマーのロジック
   void _startTimer(WidgetRef ref) async {
-    const ps = 1.0 / 1500;
+    const ps = 1.0 / 300;
     double psCount = 0.0;
-
     ref.read(timerProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
       (Timer timer) {
@@ -106,7 +104,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObser
               animateFromLastPercent: true,
               radius: 120.0,
               lineWidth: 8.0,
-              progressColor: Colors.amber.shade600,
+              progressColor: Theme.of(context).colorScheme.primary,
               center: Text(
                 "$min : $sec",
                 style: const TextStyle(
@@ -133,65 +131,70 @@ class HomeScreenState extends ConsumerState<HomeScreen> with WidgetsBindingObser
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          SizeRoute(
-            page: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                height: 1000,
-                width: 1000,
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: SafeArea(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            color: Colors.grey.shade100,
-                            margin: const EdgeInsets.all(16.0),
-                            child: TextButton(
-                              onPressed: () => {},
-                              child: const Text("とりあえず集中"),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            color: Colors.grey.shade100,
-                            margin: const EdgeInsets.all(16.0),
-                            child: TextButton(
-                              onPressed: () => Navigator.push(
-                                context,
-                                SizeRoute(
-                                  page: GestureDetector(
-                                    onTap: () => Navigator.popUntil(
-                                        context, (route) => route.isFirst),
-                                    child: const Center(
-                                      child: AddTimerScreen(),
-                                    ),
+          onPressed: () => Navigator.push(
+                context,
+                SizeRoute(
+                  page: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      height: 1000,
+                      width: 1000,
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      child: SafeArea(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  color: Colors.grey.shade100,
+                                  margin: const EdgeInsets.all(16.0),
+                                  child: TextButton(
+                                    onPressed: () => {},
+                                    child: const Text("とりあえず集中"),
                                   ),
                                 ),
-                              ),
-                              child: const Text("集中する仕事を決める"),
+                              ],
                             ),
-                          ),
-                        ],
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  color: Colors.grey.shade100,
+                                  margin: const EdgeInsets.all(16.0),
+                                  child: TextButton(
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      SizeRoute(
+                                        page: GestureDetector(
+                                          onTap: () => Navigator.popUntil(
+                                              context,
+                                              (route) => route.isFirst),
+                                          child: const Center(
+                                            child: AddTimerScreen(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    child: const Text("集中する仕事を決める"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-        ),
-        child: const Icon(Icons.add_alarm),
-      ),
+          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+          // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          mini: true,
+          child: const Icon(
+            Icons.add_alarm,
+          )),
     );
   }
 }

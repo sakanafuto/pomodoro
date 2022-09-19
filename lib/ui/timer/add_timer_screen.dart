@@ -11,7 +11,7 @@ class AddTimerScreen extends HookConsumerWidget {
         onTap: () => Navigator.popUntil(context, (route) => route.isFirst),
         child: Center(
           child: Container(
-            color: Theme.of(context).colorScheme.secondaryContainer,
+            color: Theme.of(context).colorScheme.primaryContainer,
             child: GestureDetector(
               onTap: () {},
               child: Center(
