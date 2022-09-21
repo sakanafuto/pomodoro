@@ -1,11 +1,11 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SettingScreen extends StatelessWidget {
-  SettingScreen({Key? key});
+  const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SizedBox());
+    return const Scaffold(body: SizedBox());
   }
 }

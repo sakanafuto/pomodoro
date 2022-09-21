@@ -1,21 +1,33 @@
+// Dart imports:
 import 'dart:async';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-// import 'package:pomodoro/ui/component/bottom_navigation_bar_view.dart';
+
+// Project imports:
 import 'package:pomodoro/ui/timer/add_timer_screen.dart';
+
+// import 'package:pomodoro/ui/component/bottom_navigation_bar_view.dart';
 
 final percentProvider = StateProvider<double>((ref) => 0);
 // final timeInMinProvider = StateProvider<int>((ref) => 1);
 final timeInSecProvider = StateProvider<int>((ref) => 300);
 final secPercentProvider = StateProvider<double>(
-    (ref) => ref.read(timeInSecProvider.notifier).state / 100);
+  (ref) => ref.read(timeInSecProvider.notifier).state / 100,
+);
 
 /// providerにする必要なかったかも
 final timerProvider = StateProvider<Timer>(
-    (ref) => Timer.periodic(const Duration(seconds: 1), (Timer timer) {}));
+  (ref) => Timer.periodic(const Duration(seconds: 1), (Timer timer) {}),
+);
 
 class HomeScreen extends StatefulHookConsumerWidget {
+  const HomeScreen({super.key});
+
   @override
   HomeScreenState createState() => HomeScreenState();
 }
@@ -37,9 +49,9 @@ class HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   /// タイマーのロジック
-  void _startTimer(WidgetRef ref) async {
+  Future<void> _startTimer(WidgetRef ref) async {
     const ps = 1.0 / 300;
-    double psCount = 0.0;
+    var psCount = 0.0;
     ref.read(timerProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
       (Timer timer) {
@@ -88,28 +100,27 @@ class HomeScreenState extends ConsumerState<HomeScreen>
     final percent = ref.watch(percentProvider);
     final timeInSec = ref.watch(timeInSecProvider);
 
-    final int min = timeInSec ~/ 60;
-    final int sec = timeInSec - (min * 60);
+    final min = timeInSec ~/ 60;
+    final sec = timeInSec - (min * 60);
 
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 200,
             child: CircularPercentIndicator(
-              circularStrokeCap: CircularStrokeCap.butt,
               percent: percent,
               animation: true,
               animateFromLastPercent: true,
-              radius: 120.0,
-              lineWidth: 8.0,
+              radius: 120,
+              lineWidth: 8,
               progressColor: Theme.of(context).colorScheme.primary,
               center: Text(
-                "$min : $sec",
+                '$min : $sec',
                 style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 40.0,
+                  fontSize: 40,
                 ),
               ),
             ),
@@ -118,95 +129,101 @@ class HomeScreenState extends ConsumerState<HomeScreen>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                  onPressed: () =>
-                      ref.watch(timerProvider.notifier).state.isActive
-                          ? ref.watch(timerProvider.notifier).state.cancel()
-                          : null,
-                  child: const Text("stop")),
+                onPressed: () =>
+                    ref.watch(timerProvider.notifier).state.isActive
+                        ? ref.watch(timerProvider.notifier).state.cancel()
+                        : null,
+                child: const Text('stop'),
+              ),
               ElevatedButton(
-                  onPressed: () => _startTimer(ref),
-                  child: const Text("start")),
+                onPressed: () => _startTimer(ref),
+                child: const Text('start'),
+              ),
             ],
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.push(
-                context,
-                SizeRoute(
-                  page: GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: Container(
-                      height: 1000,
-                      width: 1000,
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      child: SafeArea(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  color: Colors.grey.shade100,
-                                  margin: const EdgeInsets.all(16.0),
-                                  child: TextButton(
-                                    onPressed: () => {},
-                                    child: const Text("とりあえず集中"),
-                                  ),
-                                ),
-                              ],
+        onPressed: () => Navigator.push<Widget>(
+          context,
+          SizeRoute(
+            page: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                height: 1000,
+                width: 1000,
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: SafeArea(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            color: Colors.grey.shade100,
+                            margin: const EdgeInsets.all(16),
+                            child: TextButton(
+                              onPressed: () => <Widget>{},
+                              child: const Text('とりあえず集中'),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  color: Colors.grey.shade100,
-                                  margin: const EdgeInsets.all(16.0),
-                                  child: TextButton(
-                                    onPressed: () => Navigator.push(
-                                      context,
-                                      SizeRoute(
-                                        page: GestureDetector(
-                                          onTap: () => Navigator.popUntil(
-                                              context,
-                                              (route) => route.isFirst),
-                                          child: const Center(
-                                            child: AddTimerScreen(),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    child: const Text("集中する仕事を決める"),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            color: Colors.grey.shade100,
+                            margin: const EdgeInsets.all(16),
+                            child: TextButton(
+                              onPressed: () => Navigator.push<Widget>(
+                                context,
+                                SizeRoute(
+                                  page: GestureDetector(
+                                    onTap: () => Navigator.popUntil(
+                                      context,
+                                      (route) => route.isFirst,
+                                    ),
+                                    child: const Center(
+                                      child: AddTimerScreen(),
+                                    ),
+                                  ),
+                                ) as Route<Widget>,
+                              ),
+                              child: const Text('集中する仕事を決める'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
-          backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-          // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          mini: true,
-          child: const Icon(
-            Icons.add_alarm,
-          )),
+            ),
+          ) as Route<Widget>,
+        ),
+        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+        // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        mini: true,
+        child: const Icon(
+          Icons.add_alarm,
+        ),
+      ),
     );
   }
 }
 
-class SizeRoute extends PageRouteBuilder {
-  final Widget page;
+class SizeRoute extends PageRouteBuilder<dynamic> {
   SizeRoute({required this.page})
       : super(
           transitionDuration: const Duration(milliseconds: 200),
           reverseTransitionDuration: const Duration(milliseconds: 200),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              secondaryAnimation) {
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            secondaryAnimation,
+          ) {
             return page;
           },
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -215,4 +232,6 @@ class SizeRoute extends PageRouteBuilder {
             );
           },
         );
+
+  final Widget page;
 }

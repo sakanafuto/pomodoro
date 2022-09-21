@@ -1,6 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:google_fonts/google_fonts.dart';
 
+// ignore: avoid_classes_with_only_static_members
 class AppThemeData {
   static ThemeData mainThemeData = themeData(lightColorScheme, textTheme);
 
@@ -56,30 +60,30 @@ class AppThemeData {
 
   static final TextTheme textTheme = TextTheme(
     headline1:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w700, fontSize: 24.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w700, fontSize: 24),
     headline2:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w700, fontSize: 22.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w700, fontSize: 22),
     headline3:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w700, fontSize: 20.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w700, fontSize: 20),
     headline4:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 18.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 18),
     headline5:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 16.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 16),
     headline6:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 16.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 16),
     bodyText1:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w400, fontSize: 14.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w400, fontSize: 14),
     bodyText2:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w400, fontSize: 16.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w400, fontSize: 16),
     subtitle1:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 16.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 16),
     subtitle2:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 14.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 14),
     caption:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w600, fontSize: 14.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w600, fontSize: 14),
     button:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w600, fontSize: 14.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w600, fontSize: 14),
     overline:
-        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 12.0),
+        GoogleFonts.sawarabiGothic(fontWeight: FontWeight.w500, fontSize: 12),
   );
 }
