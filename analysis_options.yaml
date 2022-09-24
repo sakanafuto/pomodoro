@@ -7,3 +7,6 @@ analyzer:
   exclude:
     - lib/**/*.gql.dart
     - lib/**/*.freezed.dart
+
+  errors:
+    argument_type_not_assignable: warning

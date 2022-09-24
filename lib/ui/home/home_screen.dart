@@ -11,8 +11,6 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 // Project imports:
 import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
-// import 'package:pomodoro/ui/component/bottom_navigation_bar_view.dart';
-
 final percentProvider = StateProvider<double>((ref) => 0);
 // final timeInMinProvider = StateProvider<int>((ref) => 1);
 final timeInSecProvider = StateProvider<int>((ref) => 300);
