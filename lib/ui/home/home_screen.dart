@@ -11,8 +11,9 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 // Project imports:
 import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
+/// ToDo: psが100％にならない
+
 final percentProvider = StateProvider<double>((ref) => 0);
-// final timeInMinProvider = StateProvider<int>((ref) => 1);
 final timeInSecProvider = StateProvider<int>((ref) => 300);
 final secPercentProvider = StateProvider<double>(
   (ref) => ref.read(timeInSecProvider.notifier).state / 100,
@@ -53,42 +54,31 @@ class HomeScreenState extends ConsumerState<HomeScreen>
     ref.read(timerProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
       (Timer timer) {
-        ref.read(timeInSecProvider) > 0
-            ? {
-                /// 毎秒カウントダウン
-                ref.watch(timeInSecProvider.notifier).state--,
+        if (ref.watch(timeInSecProvider) > 0) {
+          /// 毎秒カウントダウン
+          ref.read(timeInSecProvider.notifier).state--;
 
-                /// タイマーが動いている間
-                ref.watch(timeInSecProvider) > 0.0
-                    ? {
-                        /// secPercentが1を超えない間
-                        ref.watch(timeInSecProvider) %
-                                    ref.watch(secPercentProvider) <
-                                1
-                            ? {
-                                psCount += ps,
+          /// タイマーが動いている間
+          if (ref.watch(timeInSecProvider) > 0.0) {
+            /// secPercentが1を超えない間
+            if (ref.watch(timeInSecProvider) % ref.watch(secPercentProvider) <
+                1) {
+              psCount += ps;
 
-                                /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
-                                psCount < 1.0
-                                    ? ref
-                                        .watch(percentProvider.notifier)
-                                        .state += ps
-                                    : {
-                                        ref
-                                            .watch(percentProvider.notifier)
-                                            .state = 0.0,
-                                        psCount = 0,
-                                      }
-                              }
-                            : null,
-                      }
-                    : {
-                        ref.watch(percentProvider.notifier).state = 0.0,
-                        ref.watch(timeInSecProvider.notifier).state = 60,
-                        timer.cancel(),
-                      },
+              /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
+              if (psCount < 1.0) {
+                ref.read(percentProvider.notifier).state += ps;
+              } else {
+                ref.read(percentProvider.notifier).state = 0.0;
+                psCount = 0;
               }
-            : null;
+            }
+          } else {
+            ref.read(percentProvider.notifier).state = 0.0;
+            ref.read(timeInSecProvider.notifier).state = 60;
+            timer.cancel();
+          }
+        }
       },
     );
   }
@@ -142,7 +132,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push<Widget>(
+        onPressed: () => Navigator.push<dynamic>(
           context,
           SizeRoute(
             page: GestureDetector(
@@ -175,7 +165,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
                             color: Colors.grey.shade100,
                             margin: const EdgeInsets.all(16),
                             child: TextButton(
-                              onPressed: () => Navigator.push<Widget>(
+                              onPressed: () => Navigator.push<dynamic>(
                                 context,
                                 SizeRoute(
                                   page: GestureDetector(
@@ -187,7 +177,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
                                       child: AddTimerScreen(),
                                     ),
                                   ),
-                                ) as Route<Widget>,
+                                ),
                               ),
                               child: const Text('集中する仕事を決める'),
                             ),
@@ -199,7 +189,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
                 ),
               ),
             ),
-          ) as Route<Widget>,
+          ),
         ),
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -212,7 +202,7 @@ class HomeScreenState extends ConsumerState<HomeScreen>
   }
 }
 
-class SizeRoute extends PageRouteBuilder<dynamic> {
+class SizeRoute extends PageRouteBuilder<Route<dynamic>> {
   SizeRoute({required this.page})
       : super(
           transitionDuration: const Duration(milliseconds: 200),
