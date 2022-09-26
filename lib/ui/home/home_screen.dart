@@ -5,51 +5,27 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 // Project imports:
 import 'package:pomodoro/ui/timer/add_timer_screen.dart';
 
-/// ToDo: psが100％にならない
-
 final percentProvider = StateProvider<double>((ref) => 0);
-final timeInSecProvider = StateProvider<int>((ref) => 300);
-final secPercentProvider = StateProvider<double>(
-  (ref) => ref.read(timeInSecProvider.notifier).state / 100,
-);
+final timeInSecProvider = StateProvider<int>((ref) => 60);
 
 /// providerにする必要なかったかも
 final timerProvider = StateProvider<Timer>(
   (ref) => Timer.periodic(const Duration(seconds: 1), (Timer timer) {}),
 );
 
-class HomeScreen extends StatefulHookConsumerWidget {
+class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
   const HomeScreen({super.key});
 
-  @override
-  HomeScreenState createState() => HomeScreenState();
-}
-
-class HomeScreenState extends ConsumerState<HomeScreen>
-    with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    /// 画面遷移時、Disposeすることでエラーにはならない
-    /// だがアプリ的にはタイマーは動いていてほしいのでToDoである
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
   /// タイマーのロジック
-  Future<void> _startTimer(WidgetRef ref) async {
-    const ps = 1.0 / 300;
+  Future<void> _startTimer(int totalSec, WidgetRef ref) async {
+    final ps = 1.0 / totalSec;
     var psCount = 0.0;
     ref.read(timerProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
@@ -60,18 +36,14 @@ class HomeScreenState extends ConsumerState<HomeScreen>
 
           /// タイマーが動いている間
           if (ref.watch(timeInSecProvider) > 0.0) {
-            /// secPercentが1を超えない間
-            if (ref.watch(timeInSecProvider) % ref.watch(secPercentProvider) <
-                1) {
-              psCount += ps;
+            psCount += ps;
 
-              /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
-              if (psCount < 1.0) {
-                ref.read(percentProvider.notifier).state += ps;
-              } else {
-                ref.read(percentProvider.notifier).state = 0.0;
-                psCount = 0;
-              }
+            /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
+            if (psCount < 1.0) {
+              ref.read(percentProvider.notifier).state += ps;
+            } else {
+              ref.read(percentProvider.notifier).state = 0.0;
+              psCount = 0;
             }
           } else {
             ref.read(percentProvider.notifier).state = 0.0;
@@ -84,12 +56,21 @@ class HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final percent = ref.watch(percentProvider);
     final timeInSec = ref.watch(timeInSecProvider);
 
     final min = timeInSec ~/ 60;
     final sec = timeInSec - (min * 60);
+
+    useEffect(
+      () {
+        WidgetsBinding.instance.addObserver(this);
+        ref.read(timerProvider.notifier).state.cancel();
+        return null;
+      },
+      const [],
+    );
 
     return Scaffold(
       body: Column(
@@ -119,12 +100,17 @@ class HomeScreenState extends ConsumerState<HomeScreen>
               ElevatedButton(
                 onPressed: () =>
                     ref.watch(timerProvider.notifier).state.isActive
-                        ? ref.watch(timerProvider.notifier).state.cancel()
+                        ? ref.read(timerProvider.notifier).state.cancel()
                         : null,
                 child: const Text('stop'),
               ),
               ElevatedButton(
-                onPressed: () => _startTimer(ref),
+                onPressed: () =>
+
+                    /// ToDo: 一時から再開後にどう_startTimerするか。
+                    !ref.watch(timerProvider.notifier).state.isActive
+                        ? _startTimer(timeInSec, ref)
+                        : null,
                 child: const Text('start'),
               ),
             ],
