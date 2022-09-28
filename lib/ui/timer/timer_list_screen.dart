@@ -4,18 +4,72 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final showFormProvider = StateProvider<bool>((ref) => false);
+
 class TimerListScreen extends HookConsumerWidget {
-  const TimerListScreen({super.key});
+  TimerListScreen({super.key});
+
+  TextEditingController titleController = TextEditingController();
+
+  Widget _addTimer(WidgetRef ref) {
+    ref.read(showFormProvider.state).update((state) => !state);
+    return Stack(
+      children: const [
+        // Container(
+        //   color: Colors.amber,
+        //   child:
+        TextField(),
+        // ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final showForm = ref.watch(showFormProvider);
     return Scaffold(
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemCount: 10,
-        itemBuilder: (BuildContext context, int index) =>
-            _buildTimerList(context),
-      ),
+      body: showForm
+          ? Stack(
+              children: <Widget>[
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (BuildContext context, int index) =>
+                      _buildTimerList(context),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: 300,
+                    child: TextField(
+                      maxLength: 10,
+                      style: const TextStyle(color: Colors.red),
+                      controller: titleController,
+                      autofocus: true,
+                      onSubmitted: (value) => {
+                        debugPrint(value),
+                        ref
+                            .read(showFormProvider.state)
+                            .update((state) => !state),
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: 10,
+              itemBuilder: (BuildContext context, int index) =>
+                  _buildTimerList(context),
+            ),
+      floatingActionButton: !showForm
+          ? FloatingActionButton(
+              onPressed: () =>
+                  ref.read(showFormProvider.state).update((state) => !state),
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 

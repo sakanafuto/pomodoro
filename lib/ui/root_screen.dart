@@ -16,7 +16,7 @@ class RootScreen extends HookConsumerWidget {
   RootScreen({super.key});
 
   final _pages = [
-    const TimerListScreen(),
+    TimerListScreen(),
     const HomeScreen(),
     const Text('no2'),
   ];
