@@ -3,29 +3,18 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:pomodoro/ui/timer/timer_view_model.dart';
 
 final showFormProvider = StateProvider<bool>((ref) => false);
 
 class TimerListScreen extends HookConsumerWidget {
   TimerListScreen({super.key});
 
-  TextEditingController titleController = TextEditingController();
-
-  Widget _addTimer(WidgetRef ref) {
-    ref.read(showFormProvider.state).update((state) => !state);
-    return Stack(
-      children: const [
-        // Container(
-        //   color: Colors.amber,
-        //   child:
-        TextField(),
-        // ),
-      ],
-    );
-  }
+  final TextEditingController titleController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = TimerViewModel();
     final showForm = ref.watch(showFormProvider);
     return Scaffold(
       body: showForm
@@ -39,15 +28,21 @@ class TimerListScreen extends HookConsumerWidget {
                 ),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: 300,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    // height: 100,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                     child: TextField(
                       maxLength: 10,
                       style: const TextStyle(color: Colors.red),
                       controller: titleController,
                       autofocus: true,
                       onSubmitted: (value) => {
-                        debugPrint(value),
+                        viewModel.add(titleController.text),
                         ref
                             .read(showFormProvider.state)
                             .update((state) => !state),
@@ -59,7 +54,7 @@ class TimerListScreen extends HookConsumerWidget {
             )
           : ListView.builder(
               shrinkWrap: true,
-              itemCount: 10,
+              itemCount: 1,
               itemBuilder: (BuildContext context, int index) =>
                   _buildTimerList(context),
             ),
