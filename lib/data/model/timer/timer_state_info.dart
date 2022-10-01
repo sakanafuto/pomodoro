@@ -1,4 +1,4 @@
-class TimerStateInfo {
-  TimerStateInfo({required this.name});
-  String name = '';
-}
+// class TimerInfo {
+//   TimerInfo({required this.name});
+//   String name = '';
+// }
