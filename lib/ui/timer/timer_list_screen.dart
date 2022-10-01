@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+// Project imports:
 import 'package:pomodoro/ui/timer/timer_view_model.dart';
 
 final showFormProvider = StateProvider<bool>((ref) => false);
@@ -14,7 +16,7 @@ class TimerListScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = TimerViewModel();
+    final viewModel = TimerViewModel(ref.read);
     final showForm = ref.watch(showFormProvider);
     return Scaffold(
       body: showForm
