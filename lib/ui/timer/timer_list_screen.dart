@@ -4,18 +4,69 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+// Project imports:
+import 'package:pomodoro/ui/timer/timer_view_model.dart';
+
+final showFormProvider = StateProvider<bool>((ref) => false);
+
 class TimerListScreen extends HookConsumerWidget {
-  const TimerListScreen({super.key});
+  TimerListScreen({super.key});
+
+  final TextEditingController titleController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = TimerViewModel(ref.read);
+    final showForm = ref.watch(showFormProvider);
     return Scaffold(
-      body: ListView.builder(
-        shrinkWrap: true,
-        itemCount: 10,
-        itemBuilder: (BuildContext context, int index) =>
-            _buildTimerList(context),
-      ),
+      body: showForm
+          ? Stack(
+              children: <Widget>[
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (BuildContext context, int index) =>
+                      _buildTimerList(context),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    // height: 100,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    child: TextField(
+                      maxLength: 10,
+                      style: const TextStyle(color: Colors.red),
+                      controller: titleController,
+                      autofocus: true,
+                      onSubmitted: (value) => {
+                        viewModel.add(titleController.text),
+                        ref
+                            .read(showFormProvider.state)
+                            .update((state) => !state),
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: 1,
+              itemBuilder: (BuildContext context, int index) =>
+                  _buildTimerList(context),
+            ),
+      floatingActionButton: !showForm
+          ? FloatingActionButton(
+              onPressed: () =>
+                  ref.read(showFormProvider.state).update((state) => !state),
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 

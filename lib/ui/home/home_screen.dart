@@ -178,7 +178,8 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
           ),
         ),
         backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-        // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        // shape: BeveledRectangleBorder(
+        //borderRadius: BorderRadius.circular(20)),
         mini: true,
         child: const Icon(
           Icons.add_alarm,
