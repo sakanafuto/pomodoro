@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AddTimerScreen extends HookConsumerWidget {
-  const AddTimerScreen({super.key});
+class AddPomoScreen extends HookConsumerWidget {
+  const AddPomoScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

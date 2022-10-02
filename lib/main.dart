@@ -6,15 +6,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/data/model/timer/timer.dart';
+import 'package:pomodoro/data/model/pomo/pomo.dart';
 import 'package:pomodoro/theme/app_theme.dart';
-import 'package:pomodoro/ui/timer/timer_view_model.dart';
+import 'package:pomodoro/ui/pomo/pomo_view_model.dart';
 import 'ui/root_screen.dart';
 
 void main() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(TimerAdapter());
-  await Hive.openBox<Timer>('timersBox');
+  Hive.registerAdapter(PomoAdapter());
+  await Hive.openBox<Pomo>('pomosBox');
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -23,7 +23,7 @@ class MyApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(timerViewModelProvider);
+    final viewModel = ref.watch(pomoViewModelProvider);
     // useEffect(
     //   () {
     //     viewModel.load(ref);

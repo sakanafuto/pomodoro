@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'timer.dart';
+part of 'pomo.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TimerAdapter extends TypeAdapter<Timer> {
+class PomoAdapter extends TypeAdapter<Pomo> {
   @override
   final int typeId = 0;
 
   @override
-  Timer read(BinaryReader reader) {
+  Pomo read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Timer(
+    return Pomo(
       name: fields[0] == null ? '25分集中' : fields[0] as String,
       minute: fields[1] == null ? 25 : fields[1] as int,
       caption: fields[2] == null ? '' : fields[2] as String,
@@ -24,7 +24,7 @@ class TimerAdapter extends TypeAdapter<Timer> {
   }
 
   @override
-  void write(BinaryWriter writer, Timer obj) {
+  void write(BinaryWriter writer, Pomo obj) {
     writer
       ..writeByte(3)
       ..writeByte(0)
@@ -41,7 +41,7 @@ class TimerAdapter extends TypeAdapter<Timer> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TimerAdapter &&
+      other is PomoAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

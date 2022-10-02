@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/ui/timer/timer_list_screen.dart';
+import 'package:pomodoro/ui/pomo/pomo_list_screen.dart';
 import 'home/home_screen.dart';
 
 final currentPageIndexProvider = StateProvider<int>((ref) => 0);
@@ -16,8 +16,8 @@ class RootScreen extends HookConsumerWidget {
   RootScreen({super.key});
 
   final _pages = [
-    TimerListScreen(),
-    const HomeScreen(),
+    PomoListScreen(),
+    HomeScreen(),
     const Text('no2'),
   ];
 

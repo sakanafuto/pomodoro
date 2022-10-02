@@ -10,53 +10,27 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 // Project imports:
-import 'package:pomodoro/ui/timer/add_timer_screen.dart';
+import 'package:pomodoro/ui/pomo/add_timer_screen.dart';
+import 'package:pomodoro/ui/pomo/pomo_view_model.dart';
+
+// Project imports:
+
 
 final percentProvider = StateProvider<double>((ref) => 0);
 final timeInSecProvider = StateProvider<int>((ref) => 60);
 
 /// providerにする必要なかったかも
-final timerProvider = StateProvider<Timer>(
-  (ref) => Timer.periodic(const Duration(seconds: 1), (Timer timer) {}),
+final pomoProvider = StateProvider<Timer>(
+  (ref) => Timer.periodic(const Duration(seconds: 1), (Timer pomo) {}),
 );
 
 class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
-  const HomeScreen({super.key});
-
-  /// タイマーのロジック
-  Future<void> _startTimer(int totalSec, WidgetRef ref) async {
-    final ps = 1.0 / totalSec;
-    var psCount = 0.0;
-    ref.read(timerProvider.notifier).state = Timer.periodic(
-      const Duration(seconds: 1),
-      (Timer timer) {
-        if (ref.watch(timeInSecProvider) > 0) {
-          /// 毎秒カウントダウン
-          ref.read(timeInSecProvider.notifier).state--;
-
-          /// タイマーが動いている間
-          if (ref.watch(timeInSecProvider) > 0.0) {
-            psCount += ps;
-
-            /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
-            if (psCount < 1.0) {
-              ref.read(percentProvider.notifier).state += ps;
-            } else {
-              ref.read(percentProvider.notifier).state = 0.0;
-              psCount = 0;
-            }
-          } else {
-            ref.read(percentProvider.notifier).state = 0.0;
-            ref.read(timeInSecProvider.notifier).state = 60;
-            timer.cancel();
-          }
-        }
-      },
-    );
-  }
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.watch(pomoViewModelProvider);
+
     final percent = ref.watch(percentProvider);
     final timeInSec = ref.watch(timeInSecProvider);
 
@@ -66,7 +40,7 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
     useEffect(
       () {
         WidgetsBinding.instance.addObserver(this);
-        ref.read(timerProvider.notifier).state.cancel();
+        ref.read(pomoProvider.notifier).state.cancel();
         return null;
       },
       const [],
@@ -98,18 +72,17 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                onPressed: () =>
-                    ref.watch(timerProvider.notifier).state.isActive
-                        ? ref.read(timerProvider.notifier).state.cancel()
-                        : null,
+                onPressed: () => ref.watch(pomoProvider.notifier).state.isActive
+                    ? ref.read(pomoProvider.notifier).state.cancel()
+                    : null,
                 child: const Text('stop'),
               ),
               ElevatedButton(
                 onPressed: () =>
 
-                    /// ToDo: 一時から再開後にどう_startTimerするか。
-                    !ref.watch(timerProvider.notifier).state.isActive
-                        ? _startTimer(timeInSec, ref)
+                    /// TODO: 一時から再開後にどうstartPomoするか。
+                    !ref.watch(pomoProvider.notifier).state.isActive
+                        ? viewModel.startPomo(timeInSec, ref)
                         : null,
                 child: const Text('start'),
               ),
@@ -160,7 +133,7 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
                                       (route) => route.isFirst,
                                     ),
                                     child: const Center(
-                                      child: AddTimerScreen(),
+                                      child: AddPomoScreen(),
                                     ),
                                   ),
                                 ),

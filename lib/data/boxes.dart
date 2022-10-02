@@ -2,9 +2,9 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
 // Project imports:
-import 'package:pomodoro/data/model/timer/timer.dart';
+import 'package:pomodoro/data/model/pomo/pomo.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class Boxes {
-  static Box<Timer> getTimers() => Hive.box<Timer>('timersBox');
+  static Box<Pomo> getPomos() => Hive.box<Pomo>('pomosBox');
 }

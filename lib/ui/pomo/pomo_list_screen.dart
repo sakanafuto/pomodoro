@@ -2,18 +2,20 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/data/boxes.dart';
-import 'package:pomodoro/data/model/timer/timer.dart';
-import 'package:pomodoro/ui/timer/timer_view_model.dart';
+import 'package:pomodoro/data/model/pomo/pomo.dart';
+import 'package:pomodoro/ui/home/home_screen.dart';
+import 'package:pomodoro/ui/pomo/pomo_view_model.dart';
 
 final showFormProvider = StateProvider<bool>((ref) => false);
 
-class TimerListScreen extends HookConsumerWidget {
-  TimerListScreen({super.key});
+class PomoListScreen extends HookConsumerWidget with WidgetsBindingObserver {
+  PomoListScreen({super.key});
 
   final _nameController = TextEditingController();
   final _minuteController = TextEditingController();
@@ -26,14 +28,24 @@ class TimerListScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(timerViewModelProvider);
+    final viewModel = ref.watch(pomoViewModelProvider);
     final showForm = ref.watch(showFormProvider);
     final sliderAmount = ref.watch(sliderAmountProvider);
+
+    useEffect(
+      () {
+        WidgetsBinding.instance.addObserver(this);
+        ref.read(pomoProvider.notifier).state.cancel();
+        return null;
+      },
+      const [],
+    );
+
     return Scaffold(
       body: showForm
           ? Stack(
               children: <Widget>[
-                _hiveBuilder(viewModel),
+                _hiveBuilder(ref, viewModel),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Column(
@@ -167,7 +179,7 @@ class TimerListScreen extends HookConsumerWidget {
                 ),
               ],
             )
-          : _hiveBuilder(viewModel),
+          : _hiveBuilder(ref, viewModel),
       floatingActionButton: !showForm
           ? FloatingActionButton(
               onPressed: () =>
@@ -178,22 +190,23 @@ class TimerListScreen extends HookConsumerWidget {
     );
   }
 
-  Widget _hiveBuilder(TimerViewModel viewModel) {
-    return ValueListenableBuilder<Box<Timer>>(
-      valueListenable: Boxes.getTimers().listenable(),
+  Widget _hiveBuilder(WidgetRef ref, PomoViewModel viewModel) {
+    return ValueListenableBuilder<Box<Pomo>>(
+      valueListenable: Boxes.getPomos().listenable(),
       builder: (context, box, _) {
-        final timers = box.values.toList().cast<Timer>();
-        return _buildContent(context, timers, viewModel);
+        final pomos = box.values.toList().cast<Pomo>();
+        return _buildContent(context, ref, pomos, viewModel);
       },
     );
   }
 
   Widget _buildContent(
     BuildContext context,
-    List<Timer> timers,
-    TimerViewModel viewModel,
+    WidgetRef ref,
+    List<Pomo> pomos,
+    PomoViewModel viewModel,
   ) {
-    if (timers.isNotEmpty) {
+    if (pomos.isNotEmpty) {
       return SingleChildScrollView(
         child: Column(
           children: [
@@ -201,10 +214,10 @@ class TimerListScreen extends HookConsumerWidget {
               height: 1000,
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: timers.length,
+                itemCount: pomos.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final timer = timers[index];
-                  return buildTimer(context, timer, viewModel);
+                  final pomo = pomos[index];
+                  return buildPomo(context, ref, pomo, viewModel);
                 },
               ),
             ),
@@ -216,36 +229,43 @@ class TimerListScreen extends HookConsumerWidget {
     }
   }
 
-  Widget buildTimer(
+  Widget buildPomo(
     BuildContext context,
-    Timer timer,
-    TimerViewModel viewModel,
+    WidgetRef ref,
+    Pomo pomo,
+    PomoViewModel viewModel,
   ) {
+    final minute = pomo.minute;
     return Card(
       // color: Theme.of(context).colorScheme.primaryContainer,
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       elevation: 3,
-      child: InkWell(
-        onTap: () {},
-        child: ListTile(
-          leading: IconButton(
-            icon: const Icon(Icons.local_offer),
-            onPressed: () {},
-          ),
-          dense: true,
-          title: Text(timer.name),
-          subtitle: const Text('subtitle'),
-          trailing: IconButton(
-            icon: const Icon(Icons.more_vert),
-            onPressed: () => viewModel.delete(timer: timer),
-          ),
-          onTap: () => <Widget>{},
-          // Navigator.of(context).push(
-          //   MaterialPageRoute(
-          //     builder: (context) => TimerDetailScreen(),
-          //   ),
-          // ),
+      // child: GestureDetector(
+      // onTap: () {
+      //   debugPrint('k');
+      // },
+      child: ListTile(
+        leading: IconButton(
+          icon: const Icon(Icons.play_circle),
+          onPressed: () {
+            // ref.read(timeInSecProvider.notifier).state = minute;
+            viewModel.startPomo(pomo.minute, ref);
+          },
         ),
+        dense: true,
+        title: Text(pomo.name),
+        subtitle: Text(pomo.minute.toString()),
+        trailing: IconButton(
+          icon: const Icon(Icons.more_vert),
+          onPressed: () => viewModel.delete(pomo: pomo),
+        ),
+        onTap: () => <Widget>{},
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => PomoDetailScreen(),
+        //   ),
+        // ),
+        // ),
       ),
     );
   }
