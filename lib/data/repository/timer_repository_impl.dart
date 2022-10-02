@@ -1,34 +1,36 @@
-// // Package imports:
-// import 'package:hooks_riverpod/hooks_riverpod.dart';
+// Package imports:
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// // Project imports:
-// import 'package:pomodoro/data/model/result.dart';
-// import 'package:pomodoro/data/model/shared_preferences_util.dart';
-// import 'package:pomodoro/data/model/timer/timer_state_info.dart';
-// import 'package:pomodoro/data/repository/timer_repository.dart';
+// Project imports:
+import 'package:pomodoro/data/boxes.dart';
+import 'package:pomodoro/data/model/timer/timer.dart';
+import 'package:pomodoro/data/model/timer/timer_info.dart';
+import 'package:pomodoro/data/repository/timer_repository.dart';
 
-// final timerRepositoryProvider =
-//     Provider<TimerRepository>((ref) => TimerRepositoryImpl(ref.read));
+final timerRepositoryProvider =
+    Provider<TimerRepositoryImpl>(TimerRepositoryImpl.new);
 
-// class TimerRepositoryImpl implements TimerRepository {
-//   TimerRepositoryImpl(this._reader);
+class TimerRepositoryImpl implements TimerRepository {
+  TimerRepositoryImpl(this._ref);
 
-//   final util = SharedPreferencesUtils();
+  // final util = SharedPreferencesUtils();
 
-//   final Reader _reader;
+  final Ref _ref;
 
-//   @override
-//   Future<Result<TimerInfo?>> get() async {
-//     return util.getTimerInfo().then((data) {
-//       if (data?.name != null) {
-//         return Result<TimerInfo?>.success(data);
-//       }
-//       return Result<TimerInfo?>.failure(data);
-//     });
-//   }
+  // @override
+  // Future<Result<TimerInfo?>> get() async {
+  //   return util.getTimerInfo().then((data) {
+  //     if (data?.name != null) {
+  //       return Result<TimerInfo?>.success(data);
+  //     }
+  //     return Result<TimerInfo?>.failure(data);
+  //   });
+  // }
 
-//   @override
-//   Future<void> save(TimerInfo timerInfo) {
-//     return util.setTimerInfo(timerInfo);
-//   }
-// }
+  @override
+  Future<void> save(TimerInfo timerInfo) async {
+    final timer = Timer()..name = timerInfo.name;
+    final box = Boxes.getTimers();
+    await box.add(timer);
+  }
+}

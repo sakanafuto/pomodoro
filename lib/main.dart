@@ -2,16 +2,19 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:pomodoro/data/model/timer/timer.dart';
 import 'package:pomodoro/theme/app_theme.dart';
 import 'package:pomodoro/ui/timer/timer_view_model.dart';
 import 'ui/root_screen.dart';
 
 void main() async {
-  // await Hive.initFlutter();
-  // Hive.registerAdapter(TimerAdapter());
+  await Hive.initFlutter();
+  Hive.registerAdapter(TimerAdapter());
+  await Hive.openBox<Timer>('timersBox');
   runApp(const ProviderScope(child: MyApp()));
 }
 

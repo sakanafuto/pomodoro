@@ -6,5 +6,5 @@ import 'package:pomodoro/data/model/timer/timer.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class Boxes {
-  static Box<Timer> getTimers() => Hive.box<Timer>('timers');
+  static Box<Timer> getTimers() => Hive.box<Timer>('timersBox');
 }

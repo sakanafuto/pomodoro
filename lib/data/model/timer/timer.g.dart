@@ -6,23 +6,21 @@ part of 'timer.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TimerAdapter extends TypeAdapter<_$_Timer> {
+class TimerAdapter extends TypeAdapter<Timer> {
   @override
   final int typeId = 0;
 
   @override
-  _$_Timer read(BinaryReader reader) {
+  Timer read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return _$_Timer(
-      name: fields[0] as String,
-    );
+    return Timer()..name = fields[0] as String;
   }
 
   @override
-  void write(BinaryWriter writer, _$_Timer obj) {
+  void write(BinaryWriter writer, Timer obj) {
     writer
       ..writeByte(1)
       ..writeByte(0)
