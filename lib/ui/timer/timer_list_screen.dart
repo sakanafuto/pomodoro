@@ -15,12 +15,20 @@ final showFormProvider = StateProvider<bool>((ref) => false);
 class TimerListScreen extends HookConsumerWidget {
   TimerListScreen({super.key});
 
-  final TextEditingController titleController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _minuteController = TextEditingController();
+  final _captionController = TextEditingController();
+
+  final _minuteFocusNode = FocusNode();
+  final _captionFocusNode = FocusNode();
+
+  final sliderAmountProvider = StateProvider<int>((ref) => 25);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(timerViewModelProvider);
     final showForm = ref.watch(showFormProvider);
+    final sliderAmount = ref.watch(sliderAmountProvider);
     return Scaffold(
       body: showForm
           ? Stack(
@@ -28,26 +36,133 @@ class TimerListScreen extends HookConsumerWidget {
                 _hiveBuilder(viewModel),
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 8,
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    // height: 100,
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    child: TextField(
-                      maxLength: 10,
-                      style: const TextStyle(color: Colors.red),
-                      controller: titleController,
-                      autofocus: true,
-                      onSubmitted: (value) {
-                        viewModel.add(titleController.text);
-                        ref
-                            .read(showFormProvider.state)
-                            .update((state) => !state);
-                      },
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 2,
+                          horizontal: 4,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        height: 100,
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: _minuteController,
+                              decoration: const InputDecoration(
+                                label: Text('分数'),
+                                hintText: '集中する時間を入力',
+                                prefixIcon: Icon(Icons.timer),
+                                contentPadding: EdgeInsets.only(top: 8),
+                                isDense: true,
+                              ),
+                              textInputAction: TextInputAction.next,
+                              onSubmitted: (_) {
+                                FocusScope.of(context)
+                                    .requestFocus(_captionFocusNode);
+                              },
+                            ),
+                            Expanded(
+                              child: Slider(
+                                label: '${sliderAmount.toString()} 分',
+                                value: sliderAmount.toDouble(),
+                                min: 1,
+                                max: 60,
+                                activeColor:
+                                    Theme.of(context).colorScheme.primary,
+                                inactiveColor:
+                                    Theme.of(context).colorScheme.secondary,
+                                divisions: 60,
+                                onChanged: (value) {
+                                  ref
+                                      .read(sliderAmountProvider.notifier)
+                                      .state = value.ceil();
+                                  _minuteController.text =
+                                      sliderAmount.toString();
+                                },
+                                onChangeStart: (value) {
+                                  ref
+                                      .read(sliderAmountProvider.notifier)
+                                      .state = value.ceil();
+                                  _minuteController.text =
+                                      sliderAmount.toString();
+                                },
+                                onChangeEnd: (value) {
+                                  ref
+                                      .read(sliderAmountProvider.notifier)
+                                      .state = value.ceil();
+                                  _minuteController.text =
+                                      sliderAmount.toString();
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 4,
+                          horizontal: 8,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        height: 80,
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: TextField(
+                          autofocus: true,
+                          controller: _nameController,
+                          decoration: const InputDecoration(
+                            label: Text('名前'),
+                            hintText: 'タイマー名を入力',
+                            prefixIcon: Icon(Icons.badge),
+                            contentPadding: EdgeInsets.only(top: 8),
+                            isDense: true,
+                          ),
+                          textInputAction: TextInputAction.next,
+                          onSubmitted: (_) {
+                            FocusScope.of(context)
+                                .requestFocus(_minuteFocusNode);
+                          },
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 4,
+                          horizontal: 8,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        height: 80,
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        child: TextField(
+                          controller: _captionController,
+                          decoration: const InputDecoration(
+                            hintText: '説明を入力',
+                            prefixIcon: Icon(Icons.article),
+                            contentPadding: EdgeInsets.only(top: 4),
+                            isDense: true,
+                          ),
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: (_) {
+                            FocusScope.of(context)
+                                .requestFocus(_minuteFocusNode);
+                          },
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => {
+                          viewModel.add(
+                            name: _nameController.text,
+                            minute: int.parse(_minuteController.text),
+                            caption: _captionController.text,
+                          ),
+                          _nameController.clear(),
+                          _minuteController.clear(),
+                          _captionController.clear(),
+                        },
+                        child: const Icon(Icons.send),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -83,7 +198,7 @@ class TimerListScreen extends HookConsumerWidget {
         child: Column(
           children: [
             SizedBox(
-              height: 300,
+              height: 1000,
               child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: timers.length,

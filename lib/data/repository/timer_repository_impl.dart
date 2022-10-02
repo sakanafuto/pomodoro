@@ -13,13 +13,15 @@ final timerRepositoryProvider =
 class TimerRepositoryImpl implements TimerRepository {
   TimerRepositoryImpl(this._ref);
 
-  // final util = SharedPreferencesUtils();
-
   final Ref _ref;
 
   @override
   Future<void> save(TimerInfo timerInfo) async {
-    final timer = Timer()..name = timerInfo.name;
+    final timer = Timer(
+      name: timerInfo.name,
+      minute: timerInfo.minute,
+      caption: timerInfo.caption,
+    );
     final box = Boxes.getTimers();
     await box.add(timer);
   }

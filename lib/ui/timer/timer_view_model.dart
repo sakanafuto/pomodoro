@@ -22,8 +22,12 @@ class TimerViewModel extends ChangeNotifier {
 
   late final _timerRepository = _ref.read(timerRepositoryProvider);
 
-  Future<void> add(String name) async {
-    final timerInfo = TimerInfo(name: name);
+  Future<void> add({
+    required String name,
+    required int minute,
+    required String caption,
+  }) async {
+    final timerInfo = TimerInfo(name: name, minute: minute, caption: caption);
     await _timerRepository.save(timerInfo);
   }
 
