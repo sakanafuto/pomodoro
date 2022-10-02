@@ -25,4 +25,9 @@ class TimerRepositoryImpl implements TimerRepository {
     final box = Boxes.getTimers();
     await box.add(timer);
   }
+
+  @override
+  void delete(Timer timer) {
+    timer.delete();
+  }
 }

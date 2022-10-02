@@ -204,7 +204,7 @@ class TimerListScreen extends HookConsumerWidget {
                 itemCount: timers.length,
                 itemBuilder: (BuildContext context, int index) {
                   final timer = timers[index];
-                  return buildTodo(context, timer, viewModel);
+                  return buildTimer(context, timer, viewModel);
                 },
               ),
             ),
@@ -216,7 +216,7 @@ class TimerListScreen extends HookConsumerWidget {
     }
   }
 
-  Widget buildTodo(
+  Widget buildTimer(
     BuildContext context,
     Timer timer,
     TimerViewModel viewModel,
@@ -237,7 +237,7 @@ class TimerListScreen extends HookConsumerWidget {
           subtitle: const Text('subtitle'),
           trailing: IconButton(
             icon: const Icon(Icons.more_vert),
-            onPressed: () {},
+            onPressed: () => viewModel.delete(timer: timer),
           ),
           onTap: () => <Widget>{},
           // Navigator.of(context).push(
