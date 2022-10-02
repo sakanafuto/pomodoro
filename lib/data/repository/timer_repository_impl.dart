@@ -17,16 +17,6 @@ class TimerRepositoryImpl implements TimerRepository {
 
   final Ref _ref;
 
-  // @override
-  // Future<Result<TimerInfo?>> get() async {
-  //   return util.getTimerInfo().then((data) {
-  //     if (data?.name != null) {
-  //       return Result<TimerInfo?>.success(data);
-  //     }
-  //     return Result<TimerInfo?>.failure(data);
-  //   });
-  // }
-
   @override
   Future<void> save(TimerInfo timerInfo) async {
     final timer = Timer()..name = timerInfo.name;
