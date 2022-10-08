@@ -14,6 +14,13 @@ import 'package:pomodoro/ui/component/floating_action_button_screen.dart';
 
 final percentProvider = StateProvider<double>((ref) => 0);
 final timeInSecProvider = StateProvider<int>((ref) => 60 * 25);
+final timerProvider = StateProvider<TimerState>((ref) => TimerState.stopping);
+
+enum TimerState {
+  working,
+  pausing,
+  stopping,
+}
 
 /// providerにする必要なかったかも
 final pomoProvider = StateProvider<Timer>(
@@ -35,6 +42,7 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
       () {
         WidgetsBinding.instance.addObserver(this);
         ref.read(pomoProvider.notifier).state.cancel();
+        // timer.cancel();
         return null;
       },
       const [],

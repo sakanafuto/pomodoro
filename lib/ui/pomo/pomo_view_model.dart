@@ -39,9 +39,12 @@ class PomoViewModel extends ChangeNotifier {
 
   /// タイマーのロジック
   Future<void> startPomo(int totalSec, WidgetRef ref) async {
+    ref.read(timerProvider.state).update((state) => TimerState.working);
+
     debugPrint(totalSec.toString());
     final ps = 1.0 / totalSec;
     var psCount = 0.0;
+
     ref.read(pomoProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
       (Timer timer) {
