@@ -1,0 +1,30 @@
+// Package imports:
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+// Project imports:
+import 'package:pomodoro/data/repository/pomo_repository.dart';
+
+final pomoRepositoryProvider =
+    Provider<PomoRepositoryImpl>(PomoRepositoryImpl.new);
+
+class PomoRepositoryImpl implements PomoRepository {
+  PomoRepositoryImpl(this._ref);
+
+  final Ref _ref;
+
+  // @override
+  // Future<void> save(PomoInfo pomoInfo) async {
+  //   final pomo = Pomo(
+  //     name: pomoInfo.name,
+  //     minute: pomoInfo.minute,
+  //     caption: pomoInfo.caption,
+  //   );
+  //   final box = Boxes.getPomos();
+  //   await box.add(pomo);
+  // }
+
+  // @override
+  // void delete(Pomo pomo) {
+  //   pomo.delete();
+  // }
+}
