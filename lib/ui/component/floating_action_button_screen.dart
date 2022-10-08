@@ -15,7 +15,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(pomoViewModelProvider);
-    final timeInSec = ref.watch(timeInSecProvider);
+    final totalTimeState = ref.watch(timeInSecProvider.notifier);
 
     return FloatingActionButton(
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
@@ -66,16 +66,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                             (Picker picker, List<int> time) {
                                           final totalSecTime =
                                               (time[0] * 60 + time[1]) * 60;
-                                          ref
-                                              .read(timeInSecProvider.notifier)
-                                              .state = totalSecTime;
+                                          totalTimeState.state = totalSecTime;
 
                                           /// TODO: 一時から再開後にどうstartPomoするか。
                                           if (!ref
                                               .watch(pomoProvider.notifier)
                                               .state
                                               .isActive) {
-                                            viewModel.startPomo(timeInSec, ref);
+                                            viewModel.startPomo(
+                                              totalTimeState.state,
+                                              ref,
+                                            );
                                           }
 
                                           Navigator.pop(context);

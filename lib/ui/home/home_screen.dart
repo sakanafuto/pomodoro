@@ -13,7 +13,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pomodoro/ui/component/floating_action_button_screen.dart';
 
 final percentProvider = StateProvider<double>((ref) => 0);
-final timeInSecProvider = StateProvider<int>((ref) => 60);
+final timeInSecProvider = StateProvider<int>((ref) => 60 * 25);
 
 /// providerにする必要なかったかも
 final pomoProvider = StateProvider<Timer>(
@@ -44,21 +44,22 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          SizedBox(
-            width: 400,
-            child: LinearPercentIndicator(
-              percent: percent,
-              animation: true,
-              animateFromLastPercent: true,
-              width: MediaQuery.of(context).size.width - 50,
-              lineHeight: 30,
-              barRadius: const Radius.circular(16),
-              progressColor: Theme.of(context).colorScheme.primary,
-              center: Text(
-                '$min : $sec',
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: LinearPercentIndicator(
+                percent: percent,
+                animation: true,
+                animateFromLastPercent: true,
+                lineHeight: 30,
+                barRadius: const Radius.circular(16),
+                progressColor: Theme.of(context).colorScheme.primary,
+                center: Text(
+                  '$min : $sec',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
