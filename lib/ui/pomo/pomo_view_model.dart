@@ -8,16 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/data/model/pomo/pomo.dart';
-import 'package:pomodoro/data/model/pomo/pomo_info.dart';
 import 'package:pomodoro/data/repository/pomo_repository_impl.dart';
 import 'package:pomodoro/ui/home/home_screen.dart';
-
-// Dart imports:
-
-// Flutter imports:
-
-
 
 final pomoViewModelProvider = ChangeNotifierProvider<PomoViewModel>(
   PomoViewModel.new,
@@ -30,20 +22,20 @@ class PomoViewModel extends ChangeNotifier {
 
   late final _pomoRepository = _ref.read(pomoRepositoryProvider);
 
-  Future<void> add({
-    required String name,
-    required int minute,
-    required String caption,
-  }) async {
-    final pomoInfo = PomoInfo(name: name, minute: minute, caption: caption);
-    await _pomoRepository.save(pomoInfo);
-    notifyListeners();
-  }
+  // Future<void> add({
+  //   required String name,
+  //   required int minute,
+  //   required String caption,
+  // }) async {
+  //   final pomoInfo = PomoInfo(name: name, minute: minute, caption: caption);
+  //   await _pomoRepository.save(pomoInfo);
+  //   notifyListeners();
+  // }
 
-  Future<void> delete({required Pomo pomo}) async {
-    _pomoRepository.delete(pomo);
-    notifyListeners();
-  }
+  // Future<void> delete({required Pomo pomo}) async {
+  //   _pomoRepository.delete(pomo);
+  //   notifyListeners();
+  // }
 
   /// タイマーのロジック
   Future<void> startPomo(int totalSec, WidgetRef ref) async {

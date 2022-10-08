@@ -2,9 +2,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/data/boxes.dart';
-import 'package:pomodoro/data/model/pomo/pomo.dart';
-import 'package:pomodoro/data/model/pomo/pomo_info.dart';
 import 'package:pomodoro/data/repository/pomo_repository.dart';
 
 final pomoRepositoryProvider =
@@ -15,19 +12,19 @@ class PomoRepositoryImpl implements PomoRepository {
 
   final Ref _ref;
 
-  @override
-  Future<void> save(PomoInfo pomoInfo) async {
-    final pomo = Pomo(
-      name: pomoInfo.name,
-      minute: pomoInfo.minute,
-      caption: pomoInfo.caption,
-    );
-    final box = Boxes.getPomos();
-    await box.add(pomo);
-  }
+  // @override
+  // Future<void> save(PomoInfo pomoInfo) async {
+  //   final pomo = Pomo(
+  //     name: pomoInfo.name,
+  //     minute: pomoInfo.minute,
+  //     caption: pomoInfo.caption,
+  //   );
+  //   final box = Boxes.getPomos();
+  //   await box.add(pomo);
+  // }
 
-  @override
-  void delete(Pomo pomo) {
-    pomo.delete();
-  }
+  // @override
+  // void delete(Pomo pomo) {
+  //   pomo.delete();
+  // }
 }
