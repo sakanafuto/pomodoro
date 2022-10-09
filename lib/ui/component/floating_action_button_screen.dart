@@ -6,28 +6,50 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:pomodoro/ui/component/size_route.dart';
 import 'package:pomodoro/ui/home/home_screen.dart';
 import 'package:pomodoro/ui/pomo/pomo_view_model.dart';
+
+final iconProvider =
+    StateProvider<Widget>((ref) => const Icon(Icons.play_arrow));
+
+final remainingTimeProvider = StateProvider<double>((ref) => 0);
 
 class FloatingActionButtonScreen extends ConsumerWidget {
   const FloatingActionButtonScreen({super.key});
 
-  Icon switchIcon(WidgetRef ref) {
-    switch (ref.watch(timerProvider.notifier).state) {
-      case TimerState.working:
-        return const Icon(Icons.pause);
-      case TimerState.pausing:
-        return const Icon(Icons.play_arrow);
-      case TimerState.stopping:
-        return const Icon(Icons.play_arrow);
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(pomoViewModelProvider);
-    final totalTimeState = ref.watch(timeInSecProvider.notifier);
-    final timerState = ref.watch(timerProvider.notifier);
+    final totalTime = ref.watch(timeInSecProvider.notifier).state;
+    final lastTime = ref.watch(lastTimeProvider.notifier).state;
+    final icon = ref.watch<Widget>(iconProvider);
+
+    // ドラムロールで分数選択
+    Future<void> timePick() async {
+      await Picker(
+        adapter: DateTimePickerAdapter(
+          type: PickerDateTimeType.kHMS,
+          value: DateTime(2000, 1, 1, 0, lastTime),
+          customColumnType: [3, 4],
+        ),
+        title: const Text('仕事で何分集中する？'),
+        onConfirm: (Picker picker, List<int> time) {
+          ref.read(lastTimeProvider.notifier).state =
+              (time[0] * 60 + time[1]) * 60;
+          ref
+              .read(timeInSecProvider.state)
+              .update((state) => ref.watch(lastTimeProvider.notifier).state);
+
+          viewModel.startPomo(
+            ref,
+            ref.watch(lastTimeProvider.notifier).state,
+          );
+
+          Navigator.pop(context);
+        },
+      ).showModal<dynamic>(context);
+    }
 
     Future<dynamic> switchFAB() {
       switch (ref.watch(timerProvider.notifier).state) {
@@ -59,10 +81,16 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                       .state
                                       .cancel();
                                   ref
-                                      .read(timeInSecProvider.state)
-                                      .update((state) => 25 * 60);
-                                  timerState
+                                      .read(timerProvider.state)
                                       .update((state) => TimerState.stopping);
+                                  ref.read(percentProvider.notifier).state =
+                                      0.0;
+                                  ref.read(timeInSecProvider.notifier).state =
+                                      lastTime;
+                                  ref.read(iconProvider.state).update(
+                                        (dynamic state) =>
+                                            const Icon(Icons.play_arrow),
+                                      );
                                   Navigator.pop(context);
                                 },
                                 child: const Text('ポモを終了する'),
@@ -82,8 +110,16 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                       .read(pomoProvider.notifier)
                                       .state
                                       .cancel();
-                                  timerState
+                                  ref
+                                      .read(remainingTimeProvider.notifier)
+                                      .state = totalTime.toDouble();
+                                  ref
+                                      .read(timerProvider.state)
                                       .update((state) => TimerState.pausing);
+                                  ref.read(iconProvider.state).update(
+                                        (dynamic state) =>
+                                            const Icon(Icons.play_arrow),
+                                      );
                                   Navigator.pop(context);
                                 },
                                 child: const Text('一時停止'),
@@ -125,11 +161,18 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                       .read(pomoProvider.notifier)
                                       .state
                                       .cancel();
+                                  ref.read(timeInSecProvider.notifier).state =
+                                      lastTime;
                                   ref
-                                      .read(timeInSecProvider.state)
-                                      .update((state) => 25 * 60);
-                                  timerState
+                                      .read(percentProvider.state)
+                                      .update((state) => 0);
+                                  ref
+                                      .read(timerProvider.state)
                                       .update((state) => TimerState.stopping);
+                                  ref.read(iconProvider.state).update(
+                                        (dynamic state) =>
+                                            const Icon(Icons.play_arrow),
+                                      );
                                   Navigator.pop(context);
                                 },
                                 child: const Text('ポモを終了する'),
@@ -145,12 +188,15 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () {
-                                  viewModel.startPomo(
-                                    totalTimeState.state,
-                                    ref,
-                                  );
-                                  timerState
+                                  viewModel.startPomo(ref, lastTime);
+                                  ref
+                                      .read(timerProvider.state)
                                       .update((state) => TimerState.working);
+
+                                  ref.read(iconProvider.state).update(
+                                        (dynamic state) =>
+                                            const Icon(Icons.pause),
+                                      );
                                   Navigator.pop(context);
                                 },
                                 child: const Text('再開'),
@@ -195,37 +241,15 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
+                          children: <Widget>[
                             Container(
                               color: Colors.grey.shade100,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () async {
-                                  await Picker(
-                                    adapter: DateTimePickerAdapter(
-                                      type: PickerDateTimeType.kHMS,
-                                      value: DateTime(0, 0, 0, 25),
-                                      customColumnType: [3, 4],
-                                    ),
-                                    title: const Text('仕事で何分集中する？'),
-                                    onConfirm: (Picker picker, List<int> time) {
-                                      final totalSecTime =
-                                          (time[0] * 60 + time[1]) * 60;
-                                      totalTimeState.state = totalSecTime;
-
-                                      /// TODO: 一時から再開後にどうstartPomoするか。
-                                      viewModel.startPomo(
-                                        totalTimeState.state,
-                                        ref,
-                                      );
-
-                                      Navigator.pop(context);
-                                    },
-                                  ).showModal<dynamic>(context);
-                                },
+                                onPressed: timePick,
                                 child: const Text('しごと'),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ],
@@ -242,29 +266,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20)),
       onPressed: switchFAB,
-      child: switchIcon(ref),
+      child: icon,
     );
   }
-}
-
-class SizeRoute extends PageRouteBuilder<Route<dynamic>> {
-  SizeRoute({required this.page})
-      : super(
-          transitionDuration: const Duration(milliseconds: 200),
-          reverseTransitionDuration: const Duration(milliseconds: 200),
-          pageBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            secondaryAnimation,
-          ) {
-            return page;
-          },
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return Align(
-              child: SizeTransition(sizeFactor: animation, child: child),
-            );
-          },
-        );
-
-  final Widget page;
 }

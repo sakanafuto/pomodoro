@@ -32,7 +32,7 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final percent = ref.watch(percentProvider);
+    final percent = ref.watch(percentProvider.notifier).state;
     final timeInSec = ref.watch(timeInSecProvider);
 
     final min = timeInSec ~/ 60;
@@ -42,7 +42,6 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
       () {
         WidgetsBinding.instance.addObserver(this);
         ref.read(pomoProvider.notifier).state.cancel();
-        // timer.cancel();
         return null;
       },
       const [],

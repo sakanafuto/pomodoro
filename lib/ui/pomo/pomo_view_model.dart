@@ -8,42 +8,36 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/data/repository/pomo_repository_impl.dart';
+import 'package:pomodoro/ui/component/floating_action_button_screen.dart';
 import 'package:pomodoro/ui/home/home_screen.dart';
 
 final pomoViewModelProvider = ChangeNotifierProvider<PomoViewModel>(
   PomoViewModel.new,
 );
 
+final lastTimeProvider = StateProvider<int>((ref) => 25);
+
 class PomoViewModel extends ChangeNotifier {
   PomoViewModel(this._ref);
 
   final Ref _ref;
 
-  late final _pomoRepository = _ref.read(pomoRepositoryProvider);
-
-  // Future<void> add({
-  //   required String name,
-  //   required int minute,
-  //   required String caption,
-  // }) async {
-  //   final pomoInfo = PomoInfo(name: name, minute: minute, caption: caption);
-  //   await _pomoRepository.save(pomoInfo);
-  //   notifyListeners();
-  // }
-
-  // Future<void> delete({required Pomo pomo}) async {
-  //   _pomoRepository.delete(pomo);
-  //   notifyListeners();
-  // }
-
   /// タイマーのロジック
-  Future<void> startPomo(int totalSec, WidgetRef ref) async {
+  Future<void> startPomo(WidgetRef ref, int totalSec) async {
     ref.read(timerProvider.state).update((state) => TimerState.working);
+    ref.read(iconProvider.state).update((state) => const Icon(Icons.pause));
+    final remainingTime = ref.watch(remainingTimeProvider.notifier).state;
 
-    debugPrint(totalSec.toString());
+    debugPrint('totalSec: ${totalSec.toString()}');
+    debugPrint('remainingTime: ${remainingTime.toString()}');
+
+    // double ps;
+    double psCount;
     final ps = 1.0 / totalSec;
-    var psCount = 0.0;
+
+    remainingTime == 0
+        ? psCount = 0
+        : psCount = ps * (totalSec - remainingTime);
 
     ref.read(pomoProvider.notifier).state = Timer.periodic(
       const Duration(seconds: 1),
@@ -58,6 +52,7 @@ class PomoViewModel extends ChangeNotifier {
 
             /// 59/60までインジケーターが進行し、1になるとインジケーターが0になる
             if (psCount < 1.0) {
+              debugPrint('psCount: ${psCount.toString()}');
               ref.read(percentProvider.notifier).state += ps;
             } else {
               ref.read(percentProvider.notifier).state = 0.0;
@@ -65,8 +60,16 @@ class PomoViewModel extends ChangeNotifier {
             }
           } else {
             ref.read(percentProvider.notifier).state = 0.0;
-            ref.read(timeInSecProvider.notifier).state = 60;
+            ref.read(timeInSecProvider.notifier).state = totalSec;
+            ref
+                .read(timerProvider.state)
+                .update((state) => TimerState.stopping);
+            ref
+                .read(iconProvider.state)
+                .update((state) => const Icon(Icons.play_arrow));
+            ref.read(remainingTimeProvider.notifier).state = 0;
             timer.cancel();
+            notifyListeners();
           }
         }
       },
