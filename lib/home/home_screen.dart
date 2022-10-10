@@ -6,17 +6,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 // Project imports:
-import 'package:pomodoro/ui/component/floating_action_button_screen.dart';
+import 'package:pomodoro/component/floating_action_button_screen.dart';
+import 'package:pomodoro/provider/pomo_provider.dart';
 
-final percentProvider = StateProvider<double>((ref) => 0);
-final timeInSecProvider = StateProvider<int>((ref) => 60 * 25);
-final timerProvider = StateProvider<TimerState>((ref) => TimerState.stopping);
-
-enum TimerState {
+enum PomoState {
   working,
   pausing,
   stopping,
@@ -27,8 +25,8 @@ final pomoProvider = StateProvider<Timer>(
   (ref) => Timer.periodic(const Duration(seconds: 1), (Timer pomo) {}),
 );
 
-class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
-  HomeScreen({super.key});
+class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
+  PomoScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,8 +47,18 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
 
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Center(
+            child: Text(
+              '$min : $sec',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          const Gap(32),
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -61,13 +69,7 @@ class HomeScreen extends HookConsumerWidget with WidgetsBindingObserver {
                 lineHeight: 30,
                 barRadius: const Radius.circular(16),
                 progressColor: Theme.of(context).colorScheme.primary,
-                center: Text(
-                  '$min : $sec',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),
-                ),
+                center: const Text(''),
               ),
             ),
           ),

@@ -6,14 +6,10 @@ import 'package:flutter_picker/flutter_picker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/ui/component/size_route.dart';
-import 'package:pomodoro/ui/home/home_screen.dart';
-import 'package:pomodoro/ui/pomo/pomo_view_model.dart';
-
-final iconProvider =
-    StateProvider<Widget>((ref) => const Icon(Icons.play_arrow));
-
-final remainingTimeProvider = StateProvider<double>((ref) => 0);
+import 'package:pomodoro/component/size_route.dart';
+import 'package:pomodoro/constant/pomo_state.dart';
+import 'package:pomodoro/provider/pomo_provider.dart';
+import 'package:pomodoro/screen/pomo/pomo_screen.dart';
 
 class FloatingActionButtonScreen extends ConsumerWidget {
   const FloatingActionButtonScreen({super.key});
@@ -54,7 +50,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     Future<dynamic> switchFAB() {
       switch (ref.watch(timerProvider.notifier).state) {
         // タイマーが動いているときは終了もしくは一時停止できる。
-        case TimerState.working:
+        case PomoState.working:
           return Navigator.push<dynamic>(
             context,
             SizeRoute(
@@ -82,7 +78,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                       .cancel();
                                   ref
                                       .read(timerProvider.state)
-                                      .update((state) => TimerState.stopping);
+                                      .update((state) => PomoState.stopping);
                                   ref.read(percentProvider.notifier).state =
                                       0.0;
                                   ref.read(timeInSecProvider.notifier).state =
@@ -115,7 +111,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                       .state = totalTime.toDouble();
                                   ref
                                       .read(timerProvider.state)
-                                      .update((state) => TimerState.pausing);
+                                      .update((state) => PomoState.pausing);
                                   ref.read(iconProvider.state).update(
                                         (dynamic state) =>
                                             const Icon(Icons.play_arrow),
@@ -135,7 +131,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
             ),
           );
         // タイマーが一時停止中のときは終了もしくは再開ができる。
-        case TimerState.pausing:
+        case PomoState.pausing:
           return Navigator.push<dynamic>(
             context,
             SizeRoute(
@@ -168,7 +164,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                       .update((state) => 0);
                                   ref
                                       .read(timerProvider.state)
-                                      .update((state) => TimerState.stopping);
+                                      .update((state) => PomoState.stopping);
                                   ref.read(iconProvider.state).update(
                                         (dynamic state) =>
                                             const Icon(Icons.play_arrow),
@@ -191,7 +187,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                   viewModel.startPomo(ref, lastTime);
                                   ref
                                       .read(timerProvider.state)
-                                      .update((state) => TimerState.working);
+                                      .update((state) => PomoState.working);
 
                                   ref.read(iconProvider.state).update(
                                         (dynamic state) =>
@@ -212,7 +208,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
             ),
           );
         // タイマーが終了しているときは新しく始めることができる。
-        case TimerState.stopping:
+        case PomoState.stopping:
           return Navigator.push<dynamic>(
             context,
             SizeRoute(

@@ -8,14 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/ui/component/floating_action_button_screen.dart';
-import 'package:pomodoro/ui/home/home_screen.dart';
-
-final pomoViewModelProvider = ChangeNotifierProvider<PomoViewModel>(
-  PomoViewModel.new,
-);
-
-final lastTimeProvider = StateProvider<int>((ref) => 25);
+import 'package:pomodoro/component/floating_action_button_screen.dart';
+import 'package:pomodoro/constant/pomo_state.dart';
+import 'package:pomodoro/provider/pomo_provider.dart';
+import 'package:pomodoro/screen/pomo/pomo_screen.dart';
 
 class PomoViewModel extends ChangeNotifier {
   PomoViewModel(this._ref);
@@ -24,7 +20,7 @@ class PomoViewModel extends ChangeNotifier {
 
   /// タイマーのロジック
   Future<void> startPomo(WidgetRef ref, int totalSec) async {
-    ref.read(timerProvider.state).update((state) => TimerState.working);
+    ref.read(timerProvider.state).update((state) => PomoState.working);
     ref.read(iconProvider.state).update((state) => const Icon(Icons.pause));
     final remainingTime = ref.watch(remainingTimeProvider.notifier).state;
 
@@ -61,9 +57,7 @@ class PomoViewModel extends ChangeNotifier {
           } else {
             ref.read(percentProvider.notifier).state = 0.0;
             ref.read(timeInSecProvider.notifier).state = totalSec;
-            ref
-                .read(timerProvider.state)
-                .update((state) => TimerState.stopping);
+            ref.read(timerProvider.state).update((state) => PomoState.stopping);
             ref
                 .read(iconProvider.state)
                 .update((state) => const Icon(Icons.play_arrow));

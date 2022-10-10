@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/theme/app_theme.dart';
-import 'ui/root_screen.dart';
+import 'package:pomodoro/component/app_bar_screen.dart';
+import 'package:pomodoro/component/drawer_screen.dart';
+import 'package:pomodoro/constant/app_theme.dart';
+import 'package:pomodoro/home/home_screen.dart';
 
 void main() async {
   // await Hive.initFlutter();
@@ -23,10 +25,11 @@ class MyApp extends HookConsumerWidget {
     return MaterialApp(
       theme: AppThemeData.mainThemeData,
       title: 'Simple Pomodoro',
-      initialRoute: '/',
-      routes: <String, WidgetBuilder>{
-        '/': (_) => const RootScreen(),
-      },
+      home: Scaffold(
+        appBar: const AppBarScreen(),
+        drawer: const DrawerScreen(),
+        body: PomoScreen(),
+      ),
     );
   }
 }
