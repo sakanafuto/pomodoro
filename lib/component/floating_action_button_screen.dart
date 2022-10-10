@@ -17,8 +17,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.watch(pomoViewModelProvider);
     final currentTime = ref.watch(displayTimeProvider);
-    final settingTime = ref.watch(settingTimeProvider);
-    final settingTimeInMin = settingTime ~/ 60;
+    final settingTime = ref.watch(settingTimeProvider) ~/ 60;
     final icon = ref.watch<Widget>(iconProvider);
 
     // ドラムロールで分数選択
@@ -26,7 +25,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
       await Picker(
         adapter: DateTimePickerAdapter(
           type: PickerDateTimeType.kHMS,
-          value: DateTime(2000, 1, 1, 0, settingTimeInMin),
+          value: DateTime(2000, 1, 1, 0, settingTime),
           customColumnType: [3, 4],
         ),
         title: const Text('仕事で何分集中する？'),
@@ -34,8 +33,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
           // 選択した時間を分数に変換する。time[0] => hour, time[1] => min。
           final pickTime = (time[0] * 60 + time[1]) * 60;
           ref.read(settingTimeProvider.notifier).update((state) => pickTime);
-          viewModel.startPomo(ref);
-          Navigator.pop(context);
+          viewModel.startPomo(context, ref);
         },
       ).showModal<dynamic>(context);
     }
@@ -64,10 +62,8 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Colors.grey.shade100,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () {
-                                  viewModel.stopPomo(ref);
-                                  Navigator.pop(context);
-                                },
+                                onPressed: () =>
+                                    viewModel.stopPomo(context, ref),
                                 child: const Text('ポモを終了する'),
                               ),
                             ),
@@ -80,10 +76,11 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Colors.grey.shade100,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () {
-                                  viewModel.pausePomo(ref, currentTime);
-                                  Navigator.pop(context);
-                                },
+                                onPressed: () => viewModel.pausePomo(
+                                  context,
+                                  ref,
+                                  currentTime,
+                                ),
                                 child: const Text('一時停止'),
                               ),
                             ),
@@ -118,10 +115,8 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Colors.grey.shade100,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () {
-                                  viewModel.stopPomo(ref);
-                                  Navigator.pop(context);
-                                },
+                                onPressed: () =>
+                                    viewModel.stopPomo(context, ref),
                                 child: const Text('ポモを終了する'),
                               ),
                             ),
@@ -134,10 +129,8 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Colors.grey.shade100,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () {
-                                  viewModel.restartPomo(ref);
-                                  Navigator.pop(context);
-                                },
+                                onPressed: () =>
+                                    viewModel.restartPomo(context, ref),
                                 child: const Text('再開'),
                               ),
                             ),

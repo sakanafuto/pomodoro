@@ -19,10 +19,12 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final percent = ref.watch(progressProvider);
-    final timeInSec = ref.watch(displayTimeProvider);
+    final displayTime = ref.watch(displayTimeProvider);
 
-    final min = timeInSec ~/ 60;
-    final sec = timeInSec - (min * 60);
+    /// TODO: 時間の表記がいまは 61:00 となる。
+    /// 01:01 表記がいいか 1 時間表記が良いか。
+    final minute = displayTime ~/ 60;
+    final second = displayTime - (minute * 60);
 
     useEffect(
       () {
@@ -34,35 +36,36 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
     );
 
     return Scaffold(
+      floatingActionButton: const FloatingActionButtonScreen(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
             child: Text(
-              '$min : $sec',
+              '$minute : $second',
               style: const TextStyle(
                 color: Colors.black,
-                fontSize: 24,
+                fontSize: 32,
               ),
             ),
           ),
-          const Gap(32),
+          const Gap(40),
           Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 32),
               child: LinearPercentIndicator(
                 percent: percent,
                 animation: true,
                 animateFromLastPercent: true,
-                lineHeight: 30,
+                lineHeight: 8,
                 barRadius: const Radius.circular(16),
                 progressColor: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
+          const SizedBox(height: 64),
         ],
       ),
-      floatingActionButton: const FloatingActionButtonScreen(),
     );
   }
 }

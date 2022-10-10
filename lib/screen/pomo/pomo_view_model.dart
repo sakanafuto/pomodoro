@@ -11,72 +11,81 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/constant/utils.dart';
+import 'package:pomodoro/component/utils.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
-
-/// TODO: progress が一時停止のタイミングによってたまに重複する。
 
 class PomoViewModel extends ChangeNotifier {
   PomoViewModel(this._ref);
 
+  // ignore: unused_field
   final Ref _ref;
 
   /// タイマーを開始する。
-  Future<void> startPomo(WidgetRef ref) async {
+  Future<void> startPomo(BuildContext context, WidgetRef ref) async {
     final settingTime = ref.watch(settingTimeProvider);
     final unitOfProgress = 1.0 / settingTime;
     const progress = 0.0;
 
     ref.read(displayTimeProvider.notifier).update((state) => settingTime);
-    startTimer(ref, progress, unitOfProgress, settingTime);
+    startTimer(context, ref, progress, unitOfProgress, settingTime);
+
+    Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
     notifyListeners();
   }
 
   /// タイマーを再開する。
-  void restartPomo(WidgetRef ref) {
+  void restartPomo(BuildContext context, WidgetRef ref) {
     final settingTime = ref.watch(settingTimeProvider);
     final remainingTime = ref.watch(remainingTimeProvider);
     final unitOfProgress = 1.0 / settingTime;
     final progress = unitOfProgress * (settingTime - remainingTime);
 
     ref.read(displayTimeProvider.notifier).update((state) => remainingTime);
-    startTimer(ref, progress, unitOfProgress, settingTime);
+    startTimer(context, ref, progress, unitOfProgress, settingTime);
+
+    Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
     notifyListeners();
   }
 
   /// タイマーを一時停止する。
-  void pausePomo(WidgetRef ref, int currentProgressTime) {
+  void pausePomo(BuildContext context, WidgetRef ref, int currentProgressTime) {
     ref.read(timerProvider).cancel();
     ref
         .read(remainingTimeProvider.notifier)
         .update((state) => currentProgressTime - 1);
-    Utils.changePomoPausing(ref);
+    changePomoPausing(ref);
     debugPrint('pause! reaminingTime is ${ref.watch(remainingTimeProvider)}.');
+
+    Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
     notifyListeners();
   }
 
   /// タイマーを終了する。
-  void stopPomo(WidgetRef ref) {
+  void stopPomo(BuildContext context, WidgetRef ref) {
     final settingTime = ref.watch(settingTimeProvider);
 
     // PomoState を stopping にする。
-    Utils.changePomoStopping(ref);
+    changePomoStopping(ref);
     ref.read(timerProvider).cancel();
     ref.read(progressProvider.notifier).update((state) => 0.0);
     ref.read(displayTimeProvider.notifier).update((state) => settingTime);
+
+    Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
     notifyListeners();
   }
 
   /// タイマーのロジックを担う。
   void startTimer(
+    BuildContext context,
     WidgetRef ref,
     double progress,
     double unitOfProgress,
     int settingTime,
   ) {
     debugPrint('start!');
+    final progressBar = ref.watch(progressProvider);
     // PomoState を working に変更する。
-    Utils.changePomoWorking(ref);
+    changePomoWorking(ref);
     ref.read(timerProvider.notifier).update(
           (state) => Timer.periodic(
             // 1 秒間隔で進行する。
@@ -89,9 +98,15 @@ class PomoViewModel extends ChangeNotifier {
               progress += unitOfProgress;
 
               // プログレスバーが進行中かどうか。
-              progress < 1.0
-                  ? ref.read(progressProvider.notifier).state += unitOfProgress
-                  : stopPomo(ref);
+              if (progressBar < 0.997) {
+                ref.read(progressProvider.notifier).state += unitOfProgress;
+              }
+
+              if (1.0 <= progress ||
+                  ref.watch(displayTimeProvider.notifier).state == 0) {
+                stopPomo(context, ref);
+              }
+
               notifyListeners();
             },
           ),
