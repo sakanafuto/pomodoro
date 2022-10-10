@@ -10,6 +10,7 @@ final pomoRepositoryProvider =
 class PomoRepositoryImpl implements PomoRepository {
   PomoRepositoryImpl(this._ref);
 
+  // ignore: unused_field
   final Ref _ref;
 
   // @override

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/component/floating_action_button_screen.dart';
 import 'package:pomodoro/constant/pomo_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
 import 'package:pomodoro/screen/pomo/pomo_screen.dart';
@@ -16,6 +15,7 @@ import 'package:pomodoro/screen/pomo/pomo_screen.dart';
 class PomoViewModel extends ChangeNotifier {
   PomoViewModel(this._ref);
 
+  // ignore: unused_field
   final Ref _ref;
 
   /// タイマーのロジック
