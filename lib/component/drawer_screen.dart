@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:pomodoro/ui/settings/settings_screen.dart';
+import 'package:pomodoro/screen/setting/setting_screen.dart';
 
 class DrawerScreen extends StatelessWidget {
   const DrawerScreen({super.key});

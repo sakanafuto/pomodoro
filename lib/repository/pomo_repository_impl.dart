@@ -2,7 +2,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/data/repository/pomo_repository.dart';
+import 'package:pomodoro/repository/pomo_repository.dart';
 
 final pomoRepositoryProvider =
     Provider<PomoRepositoryImpl>(PomoRepositoryImpl.new);
@@ -10,6 +10,7 @@ final pomoRepositoryProvider =
 class PomoRepositoryImpl implements PomoRepository {
   PomoRepositoryImpl(this._ref);
 
+  // ignore: unused_field
   final Ref _ref;
 
   // @override
