@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pomodoro/component/app_bar_screen.dart';
 import 'package:pomodoro/component/drawer_screen.dart';
 import 'package:pomodoro/constant/app_theme.dart';
-import 'package:pomodoro/home/home_screen.dart';
+import 'package:pomodoro/screen/pomo/pomo_screen.dart';
 
 void main() async {
   // await Hive.initFlutter();

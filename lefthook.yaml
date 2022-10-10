@@ -1,5 +1,5 @@
 pre-commit:
-  parallel: false
+  parallel: true
   commands:
     linter:
       run: dart fix --apply lib && git add {staged_files}

@@ -1,5 +1,4 @@
 // Dart imports:
-import 'dart:async';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -14,18 +13,13 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:pomodoro/component/floating_action_button_screen.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
 
-/// providerにする必要なかったかも
-final pomoProvider = StateProvider<Timer>(
-  (ref) => Timer.periodic(const Duration(seconds: 1), (Timer pomo) {}),
-);
-
 class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
   PomoScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final percent = ref.watch(percentProvider.notifier).state;
-    final timeInSec = ref.watch(timeInSecProvider);
+    final percent = ref.watch(progressProvider);
+    final timeInSec = ref.watch(displayTimeProvider);
 
     final min = timeInSec ~/ 60;
     final sec = timeInSec - (min * 60);
@@ -33,7 +27,7 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
     useEffect(
       () {
         WidgetsBinding.instance.addObserver(this);
-        ref.read(pomoProvider.notifier).state.cancel();
+        ref.read(timerProvider).cancel();
         return null;
       },
       const [],
@@ -63,7 +57,6 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
                 lineHeight: 30,
                 barRadius: const Radius.circular(16),
                 progressColor: Theme.of(context).colorScheme.primary,
-                center: const Text(''),
               ),
             ),
           ),
