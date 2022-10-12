@@ -21,8 +21,6 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
     final percent = ref.watch(progressProvider);
     final displayTime = ref.watch(displayTimeProvider);
 
-    /// TODO: 時間の表記がいまは 61:00 となる。
-    /// 01:01 表記がいいか 1 時間表記が良いか。
     final minute = displayTime ~/ 60;
     final second = displayTime - (minute * 60);
 
