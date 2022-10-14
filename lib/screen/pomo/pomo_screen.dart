@@ -11,7 +11,9 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 // Project imports:
 import 'package:pomodoro/component/floating_action_button_screen.dart';
+import 'package:pomodoro/component/size_route.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
+import 'package:pomodoro/screen/pomo/zen_screen.dart';
 
 class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
   PomoScreen({super.key});
@@ -21,8 +23,6 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
     final percent = ref.watch(progressProvider);
     final displayTime = ref.watch(displayTimeProvider);
 
-    /// TODO: 時間の表記がいまは 61:00 となる。
-    /// 01:01 表記がいいか 1 時間表記が良いか。
     final minute = displayTime ~/ 60;
     final second = displayTime - (minute * 60);
 
@@ -41,11 +41,25 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Text(
-              '$minute : $second',
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 32,
+            child: GestureDetector(
+              onTap: () => Navigator.push<dynamic>(
+                context,
+                SizeRoute(
+                  page: GestureDetector(
+                    onTap: () => Navigator.popUntil(
+                      context,
+                      (Route<dynamic> route) => route.isFirst,
+                    ),
+                    child: const ZenScreen(),
+                  ),
+                ),
+              ),
+              child: Text(
+                '$minute : $second',
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 32,
+                ),
               ),
             ),
           ),

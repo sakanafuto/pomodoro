@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/component/size_route.dart';
 import 'package:pomodoro/constant/pomo_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
+import 'package:pomodoro/screen/pomo/zen_screen.dart';
 
 class FloatingActionButtonScreen extends ConsumerWidget {
   const FloatingActionButtonScreen({super.key});
@@ -38,6 +40,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
       ).showModal<dynamic>(context);
     }
 
+    /// TODO: 長すぎ。ファイルに分けたい。
     Future<dynamic> switchFAB() {
       switch (ref.watch(pomoStateProvider.notifier).state) {
         // タイマーが動いているときは終了もしくは一時停止できる。
@@ -72,6 +75,26 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            Container(
+                              color: Colors.grey.shade100,
+                              margin: const EdgeInsets.all(16),
+                              child: TextButton(
+                                onPressed: () => Navigator.push<dynamic>(
+                                  context,
+                                  SizeRoute(
+                                    page: GestureDetector(
+                                      onTap: () => Navigator.popUntil(
+                                        context,
+                                        (Route<dynamic> route) => route.isFirst,
+                                      ),
+                                      child: const ZenScreen(),
+                                    ),
+                                  ),
+                                ),
+                                child: const Text('禅'),
+                              ),
+                            ),
+                            const Gap(16),
                             Container(
                               color: Colors.grey.shade100,
                               margin: const EdgeInsets.all(16),
