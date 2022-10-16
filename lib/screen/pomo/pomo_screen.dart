@@ -36,6 +36,7 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
     );
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       floatingActionButton: const FloatingActionButtonScreen(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -57,7 +58,6 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
               child: Text(
                 '$minute : $second',
                 style: const TextStyle(
-                  color: Colors.black,
                   fontSize: 32,
                 ),
               ),
@@ -68,12 +68,15 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: LinearPercentIndicator(
+                progressColor: Theme.of(context).colorScheme.primaryContainer,
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
                 percent: percent,
                 animation: true,
                 animateFromLastPercent: true,
                 lineHeight: 8,
                 barRadius: const Radius.circular(16),
-                progressColor: Theme.of(context).colorScheme.primary,
+                // progressColor: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),

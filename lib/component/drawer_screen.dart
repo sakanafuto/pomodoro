@@ -10,17 +10,20 @@ class DrawerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      width: 340,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           const Text('Simple Drawer'),
           IconButton(
-            onPressed: () => Navigator.of(context).push<dynamic>(
-              MaterialPageRoute<Widget>(
-                builder: (context) => const SettingScreen(),
-              ),
-            ),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.of(context).push<dynamic>(
+                MaterialPageRoute<Widget>(
+                  builder: (context) => const SettingScreen(),
+                ),
+              );
+            },
             icon: const Icon(Icons.settings),
           ),
         ],

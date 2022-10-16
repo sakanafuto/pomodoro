@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:pomodoro/component/app_bar_screen.dart';
 import 'package:pomodoro/component/drawer_screen.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -10,10 +9,21 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: AppBarScreen(),
-      drawer: DrawerScreen(),
-      body: SizedBox(),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.popUntil(
+              context,
+              (Route<dynamic> route) => route.isFirst,
+            ),
+            icon: const Icon(Icons.close),
+          )
+        ],
+      ),
+      drawer: const DrawerScreen(),
+      body: const SizedBox(),
     );
   }
 }

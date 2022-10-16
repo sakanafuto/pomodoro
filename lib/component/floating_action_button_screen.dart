@@ -62,12 +62,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () =>
                                     viewModel.stopPomo(context, ref),
-                                child: const Text('ポモを終了する'),
+                                child: const Text(
+                                  'ポモを終了する',
+                                  style: TextStyle(
+                                    color: Color(0xFF333333),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -76,7 +81,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () => Navigator.push<dynamic>(
@@ -91,12 +96,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                     ),
                                   ),
                                 ),
-                                child: const Text('禅'),
+                                child: const Text(
+                                  '禅',
+                                  style: TextStyle(
+                                    color: Color(0xFF333333),
+                                  ),
+                                ),
                               ),
                             ),
                             const Gap(16),
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () => viewModel.pausePomo(
@@ -104,7 +114,12 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                   ref,
                                   currentTime,
                                 ),
-                                child: const Text('一時停止'),
+                                child: const Text(
+                                  '一時停止',
+                                  style: TextStyle(
+                                    color: Color(0xFF333333),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -135,12 +150,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () =>
                                     viewModel.stopPomo(context, ref),
-                                child: const Text('ポモを終了する'),
+                                child: const Text(
+                                  'ポモを終了する',
+                                  style: TextStyle(
+                                    color: Color(0xFF333333),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -149,12 +169,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () =>
                                     viewModel.restartPomo(context, ref),
-                                child: const Text('再開'),
+                                child: const Text(
+                                  '再開',
+                                  style: TextStyle(
+                                    color: Color(0xFF333333),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -185,11 +210,16 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () => <Widget>{},
-                                child: const Text('趣味をどれくらい楽しむ？'),
+                                child: const Text(
+                                  '趣味をどれくらい楽しむ？',
+                                  style: TextStyle(
+                                    color: Color(0xFF333333),
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -198,11 +228,16 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: timePick,
-                                child: const Text('しごと'),
+                                child: const Text(
+                                  'しごと',
+                                  style: TextStyle(
+                                    color: Color(0xFF333333),
+                                  ),
+                                ),
                               ),
                             )
                           ],
@@ -218,7 +253,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     }
 
     return FloatingActionButton(
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      // backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20)),
       onPressed: switchFAB,
       child: icon,
