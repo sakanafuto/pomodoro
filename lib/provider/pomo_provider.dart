@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:pomodoro/constant/pomo_state.dart';
+import 'package:pomodoro/model/pomo/pomo_state.dart';
 import 'package:pomodoro/screen/pomo/pomo_view_model.dart';
 
 // タイマーを監視する。

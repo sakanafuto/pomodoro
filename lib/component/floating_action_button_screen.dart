@@ -8,7 +8,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/component/size_route.dart';
-import 'package:pomodoro/constant/pomo_state.dart';
+import 'package:pomodoro/constant/colors.dart';
+import 'package:pomodoro/model/pomo/pomo_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
 import 'package:pomodoro/screen/pomo/zen_screen.dart';
 
@@ -70,7 +71,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                 child: const Text(
                                   'ポモを終了する',
                                   style: TextStyle(
-                                    color: Color(0xFF333333),
+                                    color: textColor,
                                   ),
                                 ),
                               ),
@@ -99,7 +100,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                 child: const Text(
                                   '禅',
                                   style: TextStyle(
-                                    color: Color(0xFF333333),
+                                    color: textColor,
                                   ),
                                 ),
                               ),
@@ -117,7 +118,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                 child: const Text(
                                   '一時停止',
                                   style: TextStyle(
-                                    color: Color(0xFF333333),
+                                    color: textColor,
                                   ),
                                 ),
                               ),
@@ -158,7 +159,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                 child: const Text(
                                   'ポモを終了する',
                                   style: TextStyle(
-                                    color: Color(0xFF333333),
+                                    color: textColor,
                                   ),
                                 ),
                               ),
@@ -177,7 +178,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                 child: const Text(
                                   '再開',
                                   style: TextStyle(
-                                    color: Color(0xFF333333),
+                                    color: textColor,
                                   ),
                                 ),
                               ),
@@ -217,7 +218,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                 child: const Text(
                                   '趣味をどれくらい楽しむ？',
                                   style: TextStyle(
-                                    color: Color(0xFF333333),
+                                    color: textColor,
                                   ),
                                 ),
                               ),
@@ -235,7 +236,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                 child: const Text(
                                   'しごと',
                                   style: TextStyle(
-                                    color: Color(0xFF333333),
+                                    color: textColor,
                                   ),
                                 ),
                               ),

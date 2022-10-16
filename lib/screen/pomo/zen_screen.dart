@@ -28,15 +28,15 @@ class ZenScreen extends HookConsumerWidget {
             child: minuteDisplay.value
                 ? Text(
                     '$minute : $second',
-                    style: const TextStyle(
-                      color: Color(0xFFFFFFFD),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.background,
                       fontSize: 64,
                     ),
                   )
                 : Text(
                     displayTime.toString(),
-                    style: const TextStyle(
-                      color: Color(0xFFFFFFFD),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.background,
                       fontSize: 128,
                     ),
                   ),

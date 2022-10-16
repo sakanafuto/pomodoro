@@ -2,18 +2,20 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/component/app_bar_screen.dart';
 import 'package:pomodoro/component/drawer_screen.dart';
 import 'package:pomodoro/constant/colors.dart';
+import 'package:pomodoro/model/shaft/shaft.dart';
 import 'package:pomodoro/screen/pomo/pomo_screen.dart';
 
 void main() async {
-  // await Hive.initFlutter();
-  // Hive.registerAdapter(PomoAdapter());
-  // await Hive.openBox<Pomo>('pomosBox');
+  await Hive.initFlutter();
+  Hive.registerAdapter(ShaftAdapter());
+  await Hive.openBox<Shaft>('shaftsBox');
   runApp(const ProviderScope(child: MyApp()));
 }
 

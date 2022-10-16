@@ -1,10 +1,7 @@
-// // Package imports:
-// import 'package:hive_flutter/hive_flutter.dart';
+// Package imports:
+import 'package:hive_flutter/hive_flutter.dart';
 
-// // Project imports:
-// import 'package:pomodoro/data/model/pomo/pomo.dart';
+// Project imports:
+import 'package:pomodoro/model/shaft/shaft.dart';
 
-// // ignore: avoid_classes_with_only_static_members
-// class Boxes {
-//   static Box<Pomo> getPomos() => Hive.box<Pomo>('pomosBox');
-// }
+Box<Shaft> getShafts() => Hive.box<Shaft>('shaftBox');

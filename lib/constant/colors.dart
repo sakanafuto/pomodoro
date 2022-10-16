@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:google_fonts/google_fonts.dart';
 
+const textColor = Color(0xFF333333);
+const subTextColor = Color(0xFF666666);
+
 ThemeData pomoTheme(ColorScheme shaftColorScheme) {
   return ThemeData(
     useMaterial3: true,
