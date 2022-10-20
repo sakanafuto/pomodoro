@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:gap/gap.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 // Project imports:
 import 'package:pomodoro/constant/colors.dart';
+import 'package:pomodoro/model/shaft/shaft.dart';
+import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/screen/setting/setting_screen.dart';
 import 'package:pomodoro/screen/shaft/shaft_log.dart';
 
@@ -14,12 +17,27 @@ class DrawerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pomoLog = Shaft(
+      type: ShaftState.work.toString(),
+      totalTime: 20,
+      date: DateTime.now(),
+    );
     return Drawer(
       width: 340,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          const Text('Simple Drawer'),
+          TextButton(
+            child: const Text('Simple Drawer'),
+            onPressed: () async {
+              final box = await Hive.openBox<Shaft>('shaftsBox');
+              await box.put('work', pomoLog);
+
+              debugPrint('Total: ${box.get('work')?.type}');
+              debugPrint('Total: ${box.get('work')?.totalTime.toString()}');
+              debugPrint('Total: ${box.get('work')?.date.toString()}');
+            },
+          ),
           const Gap(16),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
