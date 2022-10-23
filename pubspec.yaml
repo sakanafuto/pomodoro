@@ -23,6 +23,7 @@ dependencies:
   intl: ^0.17.0
   json_serializable: ^6.4.1
   percent_indicator: ^4.0.1
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   build_runner: ^2.2.1
