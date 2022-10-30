@@ -10,6 +10,8 @@ import 'package:pomodoro/component/app_bar_screen.dart';
 import 'package:pomodoro/component/drawer_screen.dart';
 import 'package:pomodoro/constant/colors.dart';
 import 'package:pomodoro/model/shaft/shaft.dart';
+import 'package:pomodoro/model/shaft/shaft_state.dart';
+import 'package:pomodoro/provider/shaft_provider.dart';
 import 'package:pomodoro/screen/pomo/pomo_screen.dart';
 
 void main() async {
@@ -24,8 +26,14 @@ class MyApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final shaftMode = ref.watch(shaftSelectorProvider);
+
     return MaterialApp(
-      theme: pomoTheme(workColorScheme),
+      theme: shaftMode == ShaftState.work
+          ? pomoTheme(workColorScheme)
+          : shaftMode == ShaftState.hoby
+              ? pomoTheme(hobyColorScheme)
+              : pomoTheme(restColorScheme),
       title: 'Simple Pomodoro',
       home: Scaffold(
         appBar: const AppBarScreen(),

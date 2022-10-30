@@ -10,7 +10,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pomodoro/component/size_route.dart';
 import 'package:pomodoro/constant/colors.dart';
 import 'package:pomodoro/model/pomo/pomo_state.dart';
+import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
+import 'package:pomodoro/provider/shaft_provider.dart';
 import 'package:pomodoro/screen/pomo/zen_screen.dart';
 
 class FloatingActionButtonScreen extends ConsumerWidget {
@@ -22,6 +24,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     final currentTime = ref.watch(displayTimeProvider);
     final settingTime = ref.watch(settingTimeProvider) ~/ 60;
     final icon = ref.watch<Widget>(iconProvider);
+    final shaftState = ref.watch(shaftStateProvider);
 
     // ドラムロールで分数選択
     Future<void> timePick() async {
@@ -214,9 +217,165 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () => <Widget>{},
+                                onPressed: () {
+                                  Navigator.push<dynamic>(
+                                    context,
+                                    SizeRoute(
+                                      page: GestureDetector(
+                                        onTap: () => Navigator.pop(context),
+                                        child: Container(
+                                          height: 1000,
+                                          width: 1000,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryContainer,
+                                          child: SafeArea(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .background,
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                        16,
+                                                      ),
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(
+                                                                shaftStateProvider
+                                                                    .notifier,
+                                                              )
+                                                              .update(
+                                                                (state) =>
+                                                                    ShaftState
+                                                                        .work,
+                                                              );
+                                                          ref
+                                                              .watch(
+                                                                shaftSelectorProvider
+                                                                    .notifier,
+                                                              )
+                                                              .change(
+                                                                ShaftState.work,
+                                                              );
+                                                          timePick();
+                                                        },
+                                                        child: const Text(
+                                                          '仕事',
+                                                          style: TextStyle(
+                                                            color: textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .background,
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                        16,
+                                                      ),
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(
+                                                                shaftStateProvider
+                                                                    .notifier,
+                                                              )
+                                                              .update(
+                                                                (state) =>
+                                                                    ShaftState
+                                                                        .hoby,
+                                                              );
+                                                          ref
+                                                              .watch(
+                                                                shaftSelectorProvider
+                                                                    .notifier,
+                                                              )
+                                                              .change(
+                                                                ShaftState.hoby,
+                                                              );
+                                                          timePick();
+                                                        },
+                                                        child: const Text(
+                                                          '趣味',
+                                                          style: TextStyle(
+                                                            color: textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .background,
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                        16,
+                                                      ),
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(
+                                                                shaftStateProvider
+                                                                    .notifier,
+                                                              )
+                                                              .update(
+                                                                (state) =>
+                                                                    ShaftState
+                                                                        .rest,
+                                                              );
+                                                          ref
+                                                              .watch(
+                                                                shaftSelectorProvider
+                                                                    .notifier,
+                                                              )
+                                                              .change(
+                                                                ShaftState.rest,
+                                                              );
+                                                          timePick();
+                                                        },
+                                                        child: const Text(
+                                                          '休息',
+                                                          style: TextStyle(
+                                                            color: textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                                 child: const Text(
-                                  '趣味をどれくらい楽しむ？',
+                                  '軸を変更する。',
                                   style: TextStyle(
                                     color: textColor,
                                   ),
@@ -233,9 +392,9 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: timePick,
-                                child: const Text(
-                                  'しごと',
-                                  style: TextStyle(
+                                child: Text(
+                                  '\'$shaftState\'で集中する',
+                                  style: const TextStyle(
                                     color: textColor,
                                   ),
                                 ),

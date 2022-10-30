@@ -17,7 +17,7 @@ class ShaftAdapter extends TypeAdapter<Shaft> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Shaft(
-      type: fields[0] == null ? ShaftState.work : fields[0] as ShaftState,
+      type: fields[0] as String,
       totalTime: fields[1] as int,
       date: fields[2] as DateTime,
     );
