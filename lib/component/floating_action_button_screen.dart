@@ -8,8 +8,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/component/size_route.dart';
-import 'package:pomodoro/constant/pomo_state.dart';
+import 'package:pomodoro/constant/colors.dart';
+import 'package:pomodoro/model/pomo/pomo_state.dart';
+import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
+import 'package:pomodoro/provider/shaft_provider.dart';
 import 'package:pomodoro/screen/pomo/zen_screen.dart';
 
 class FloatingActionButtonScreen extends ConsumerWidget {
@@ -21,6 +24,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     final currentTime = ref.watch(displayTimeProvider);
     final settingTime = ref.watch(settingTimeProvider) ~/ 60;
     final icon = ref.watch<Widget>(iconProvider);
+    final shaftState = ref.watch(shaftStateProvider);
 
     // ドラムロールで分数選択
     Future<void> timePick() async {
@@ -62,12 +66,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () =>
                                     viewModel.stopPomo(context, ref),
-                                child: const Text('ポモを終了する'),
+                                child: const Text(
+                                  'ポモを終了する',
+                                  style: TextStyle(
+                                    color: textColor,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -76,7 +85,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () => Navigator.push<dynamic>(
@@ -91,12 +100,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                     ),
                                   ),
                                 ),
-                                child: const Text('禅'),
+                                child: const Text(
+                                  '禅',
+                                  style: TextStyle(
+                                    color: textColor,
+                                  ),
+                                ),
                               ),
                             ),
                             const Gap(16),
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () => viewModel.pausePomo(
@@ -104,7 +118,12 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                   ref,
                                   currentTime,
                                 ),
-                                child: const Text('一時停止'),
+                                child: const Text(
+                                  '一時停止',
+                                  style: TextStyle(
+                                    color: textColor,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -135,12 +154,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () =>
                                     viewModel.stopPomo(context, ref),
-                                child: const Text('ポモを終了する'),
+                                child: const Text(
+                                  'ポモを終了する',
+                                  style: TextStyle(
+                                    color: textColor,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -149,12 +173,17 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: () =>
                                     viewModel.restartPomo(context, ref),
-                                child: const Text('再開'),
+                                child: const Text(
+                                  '再開',
+                                  style: TextStyle(
+                                    color: textColor,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -185,11 +214,172 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () => <Widget>{},
-                                child: const Text('趣味をどれくらい楽しむ？'),
+                                onPressed: () {
+                                  Navigator.push<dynamic>(
+                                    context,
+                                    SizeRoute(
+                                      page: GestureDetector(
+                                        onTap: () => Navigator.pop(context),
+                                        child: Container(
+                                          height: 1000,
+                                          width: 1000,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primaryContainer,
+                                          child: SafeArea(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .background,
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                        16,
+                                                      ),
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(
+                                                                shaftStateProvider
+                                                                    .notifier,
+                                                              )
+                                                              .update(
+                                                                (state) =>
+                                                                    ShaftState
+                                                                        .work,
+                                                              );
+                                                          ref
+                                                              .watch(
+                                                                shaftSelectorProvider
+                                                                    .notifier,
+                                                              )
+                                                              .change(
+                                                                ShaftState.work,
+                                                              );
+                                                          timePick();
+                                                        },
+                                                        child: const Text(
+                                                          '仕事',
+                                                          style: TextStyle(
+                                                            color: textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .background,
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                        16,
+                                                      ),
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(
+                                                                shaftStateProvider
+                                                                    .notifier,
+                                                              )
+                                                              .update(
+                                                                (state) =>
+                                                                    ShaftState
+                                                                        .hoby,
+                                                              );
+                                                          ref
+                                                              .watch(
+                                                                shaftSelectorProvider
+                                                                    .notifier,
+                                                              )
+                                                              .change(
+                                                                ShaftState.hoby,
+                                                              );
+                                                          timePick();
+                                                        },
+                                                        child: const Text(
+                                                          '趣味',
+                                                          style: TextStyle(
+                                                            color: textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .background,
+                                                      margin:
+                                                          const EdgeInsets.all(
+                                                        16,
+                                                      ),
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          ref
+                                                              .read(
+                                                                shaftStateProvider
+                                                                    .notifier,
+                                                              )
+                                                              .update(
+                                                                (state) =>
+                                                                    ShaftState
+                                                                        .rest,
+                                                              );
+                                                          ref
+                                                              .watch(
+                                                                shaftSelectorProvider
+                                                                    .notifier,
+                                                              )
+                                                              .change(
+                                                                ShaftState.rest,
+                                                              );
+                                                          timePick();
+                                                        },
+                                                        child: const Text(
+                                                          '休息',
+                                                          style: TextStyle(
+                                                            color: textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  '軸を変更する。',
+                                  style: TextStyle(
+                                    color: textColor,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -198,11 +388,16 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: <Widget>[
                             Container(
-                              color: Colors.grey.shade100,
+                              color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
                                 onPressed: timePick,
-                                child: const Text('しごと'),
+                                child: Text(
+                                  '\'$shaftState\'で集中する',
+                                  style: const TextStyle(
+                                    color: textColor,
+                                  ),
+                                ),
                               ),
                             )
                           ],
@@ -218,7 +413,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     }
 
     return FloatingActionButton(
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+      // backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20)),
       onPressed: switchFAB,
       child: icon,

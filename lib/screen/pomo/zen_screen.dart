@@ -21,22 +21,22 @@ class ZenScreen extends HookConsumerWidget {
 
     return Scaffold(
       body: ColoredBox(
-        color: Colors.black,
+        color: const Color(0xFF000000),
         child: Center(
           child: GestureDetector(
             onTap: () => minuteDisplay.value = !minuteDisplay.value,
             child: minuteDisplay.value
                 ? Text(
                     '$minute : $second',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.background,
                       fontSize: 64,
                     ),
                   )
                 : Text(
                     displayTime.toString(),
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.background,
                       fontSize: 128,
                     ),
                   ),

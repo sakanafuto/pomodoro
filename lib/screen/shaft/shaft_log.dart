@@ -2,19 +2,19 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:pomodoro/component/drawer_screen.dart';
 
-class SettingScreen extends StatelessWidget {
-  const SettingScreen({super.key});
+class ShaftLog extends HookConsumerWidget {
+  const ShaftLog({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () => Navigator.popUntil(
@@ -22,12 +22,10 @@ class SettingScreen extends StatelessWidget {
               (Route<dynamic> route) => route.isFirst,
             ),
             icon: const Icon(Icons.close),
-          ),
-          const Gap(8),
+          )
         ],
       ),
-      // drawer: const DrawerScreen(),
-      body: const SizedBox(),
+      drawer: const DrawerScreen(),
     );
   }
 }
