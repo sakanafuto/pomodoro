@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_picker/flutter_picker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
@@ -83,6 +84,7 @@ class PomoViewModel extends ChangeNotifier {
     int settingTime,
   ) {
     debugPrint('start!');
+    var logSecond = 0;
     final progressBar = ref.watch(progressProvider);
     // PomoState を working に変更する。
     changePomoWorking(ref);
@@ -91,17 +93,27 @@ class PomoViewModel extends ChangeNotifier {
             // 1 秒間隔で進行する。
             const Duration(seconds: 1),
             (Timer timer) {
-              // 毎秒カウントダウンする。
+              // 毎秒ディスプレイの数値をカウントダウンする。
               ref.read(displayTimeProvider.notifier).state--;
-              // プロバイダを用いずにわざわざここでカウントするのは、
+              logSecond++;
+
+              // n% / 100% を毎秒進行させる。
+              // progressProvider を用いずにローカルの progress でカウントするのは、
               // プログレスが 1.0 を超えるのを先に感知して次の if 文で分岐させるため。
               progress += unitOfProgress;
 
-              // プログレスバーが進行中かどうか。
+              // プログレスバーが進行中の場合、バーは進行する（内部的には数値でカウントしている）。
+              // 不具合が起きてバーが時間よりも早くカウントされても、0.997（ほぼ 1 に見える）で止まる。
               if (progressBar < 0.997) {
                 ref.read(progressProvider.notifier).state += unitOfProgress;
               }
 
+              // 1 分ごとにログを蓄積する。
+              if (logSecond == 60) {
+                logSecond = 0;
+              }
+
+              // プログレスが 1.0 を超えるか、ディスプレイの数値が 0 になった場合、タイマーを終了する。
               if (1.0 <= progress ||
                   ref.watch(displayTimeProvider.notifier).state == 0) {
                 stopPomo(context, ref);
@@ -111,5 +123,27 @@ class PomoViewModel extends ChangeNotifier {
             },
           ),
         );
+  }
+
+  // ドラムロールで分数選択
+  Future<void> timePick(
+    BuildContext context,
+    WidgetRef ref,
+    int settingTime,
+  ) async {
+    await Picker(
+      adapter: DateTimePickerAdapter(
+        type: PickerDateTimeType.kHMS,
+        value: DateTime(2000, 1, 1, 0, settingTime),
+        customColumnType: [3, 4],
+      ),
+      title: const Text('仕事で何分集中する？'),
+      onConfirm: (Picker picker, List<int> time) {
+        // 選択した時間を分数に変換する。time[0] => hour, time[1] => min。
+        final pickTime = (time[0] * 60 + time[1]) * 60;
+        ref.read(settingTimeProvider.notifier).update((state) => pickTime);
+        startPomo(context, ref);
+      },
+    ).showModal<dynamic>(context);
   }
 }

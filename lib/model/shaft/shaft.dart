@@ -11,8 +11,8 @@ class Shaft extends HiveObject {
   @HiveField(0)
   final String type;
 
-  @HiveField(1)
-  final int totalTime;
+  @HiveField(1, defaultValue: 0)
+  late int totalTime;
 
   @HiveField(2)
   final DateTime date;

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_picker/flutter_picker.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -25,24 +24,6 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     final settingTime = ref.watch(settingTimeProvider) ~/ 60;
     final icon = ref.watch(iconProvider);
     final shaftState = ref.watch(shaftStateProvider);
-
-    // ドラムロールで分数選択
-    Future<void> timePick() async {
-      await Picker(
-        adapter: DateTimePickerAdapter(
-          type: PickerDateTimeType.kHMS,
-          value: DateTime(2000, 1, 1, 0, settingTime),
-          customColumnType: [3, 4],
-        ),
-        title: const Text('仕事で何分集中する？'),
-        onConfirm: (Picker picker, List<int> time) {
-          // 選択した時間を分数に変換する。time[0] => hour, time[1] => min。
-          final pickTime = (time[0] * 60 + time[1]) * 60;
-          ref.read(settingTimeProvider.notifier).update((state) => pickTime);
-          viewModel.startPomo(context, ref);
-        },
-      ).showModal<dynamic>(context);
-    }
 
     /// TODO: 長すぎ。ファイルに分けたい。
     Future<dynamic> switchFAB() {
@@ -266,7 +247,11 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                               .change(
                                                                 ShaftState.work,
                                                               );
-                                                          timePick();
+                                                          viewModel.timePick(
+                                                            context,
+                                                            ref,
+                                                            settingTime,
+                                                          );
                                                         },
                                                         child: const Text(
                                                           '仕事',
@@ -310,7 +295,11 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                               .change(
                                                                 ShaftState.hoby,
                                                               );
-                                                          timePick();
+                                                          viewModel.timePick(
+                                                            context,
+                                                            ref,
+                                                            settingTime,
+                                                          );
                                                         },
                                                         child: const Text(
                                                           '趣味',
@@ -354,7 +343,11 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                               .change(
                                                                 ShaftState.rest,
                                                               );
-                                                          timePick();
+                                                          viewModel.timePick(
+                                                            context,
+                                                            ref,
+                                                            settingTime,
+                                                          );
                                                         },
                                                         child: const Text(
                                                           '休息',
@@ -391,7 +384,11 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: timePick,
+                                onPressed: () => viewModel.timePick(
+                                  context,
+                                  ref,
+                                  settingTime,
+                                ),
                                 child: Text(
                                   '\'$shaftState\'で集中する',
                                   style: const TextStyle(
@@ -413,8 +410,6 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     }
 
     return FloatingActionButton(
-      // backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      // shape: BeveledRectangleBorder(borderRadius: BorderRadius.circular(20)),
       onPressed: switchFAB,
       child: icon,
     );

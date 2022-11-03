@@ -18,7 +18,7 @@ class ShaftAdapter extends TypeAdapter<Shaft> {
     };
     return Shaft(
       type: fields[0] as String,
-      totalTime: fields[1] as int,
+      totalTime: fields[1] == null ? 0 : fields[1] as int,
       date: fields[2] as DateTime,
     );
   }

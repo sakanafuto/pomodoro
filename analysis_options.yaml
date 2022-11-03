@@ -53,7 +53,7 @@ linter:
     - flutter_style_todos
     - invariant_booleans
     - join_return_with_assignment
-    - lines_longer_than_80_chars
+    # - lines_longer_than_80_chars
     - literal_only_boolean_expressions
     - no_adjacent_strings_in_list
     - no_default_cases
