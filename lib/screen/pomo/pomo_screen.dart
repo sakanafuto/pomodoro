@@ -76,7 +76,6 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
                 animateFromLastPercent: true,
                 lineHeight: 8,
                 barRadius: const Radius.circular(16),
-                // progressColor: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),

@@ -23,7 +23,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     final viewModel = ref.watch(pomoViewModelProvider);
     final currentTime = ref.watch(displayTimeProvider);
     final settingTime = ref.watch(settingTimeProvider) ~/ 60;
-    final icon = ref.watch<Widget>(iconProvider);
+    final icon = ref.watch(iconProvider);
     final shaftState = ref.watch(shaftStateProvider);
 
     // ドラムロールで分数選択
