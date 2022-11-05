@@ -9,10 +9,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/component/utils.dart';
+import 'package:pomodoro/model/shaft/shaft.dart';
+import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
 
 class PomoViewModel extends ChangeNotifier {
@@ -110,6 +113,7 @@ class PomoViewModel extends ChangeNotifier {
 
               // 1 分ごとにログを蓄積する。
               if (logSecond == 60) {
+                countLog();
                 logSecond = 0;
               }
 
@@ -145,5 +149,27 @@ class PomoViewModel extends ChangeNotifier {
         startPomo(context, ref);
       },
     ).showModal<dynamic>(context);
+  }
+
+  Future<void> countLog() async {
+    final box = await Hive.openBox<Shaft>('shaftsBox');
+    final workLog = box.get(
+      'work',
+      defaultValue: Shaft(
+        type: ShaftState.work.toString(),
+        totalTime: 0,
+        date: DateTime.now(),
+      ),
+    );
+
+    workLog!.totalTime += 1;
+    await box.put('work', workLog);
+  }
+
+  Future<String> showLog() async {
+    final box = await Hive.openBox<Shaft>('shaftsBox');
+    final workLog = box.get('work');
+
+    return workLog!.totalTime.toString();
   }
 }

@@ -10,3 +10,5 @@ final shaftStateProvider = StateProvider<ShaftState>((ref) => ShaftState.work);
 
 /// テーマ選択のProvider
 final shaftSelectorProvider = StateNotifierProvider(ShaftSelector.new);
+
+// final logProvider = State

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:gap/gap.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/constant/colors.dart';
+import 'package:pomodoro/model/shaft/shaft.dart';
 import 'package:pomodoro/screen/setting/setting_screen.dart';
 import 'package:pomodoro/screen/shaft/shaft_log_screen.dart';
 import 'package:pomodoro/screen/shaft/shaft_select_screen.dart';
@@ -35,7 +37,19 @@ class DrawerScreen extends HookConsumerWidget {
                       color: Theme.of(context).colorScheme.primaryContainer,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final box = await Hive.openBox<Shaft>('shaftsBox');
+
+                    final workLog = box.get('work');
+
+                    const sampleInt = 30;
+                    workLog!.totalTime += sampleInt;
+
+                    await box.put('work', workLog);
+                    debugPrint(
+                      '${box.get('work')?.type}, ${box.get('work')?.totalTime.toString()}',
+                    );
+                  },
                 ),
                 const Gap(64),
                 TextButton(
