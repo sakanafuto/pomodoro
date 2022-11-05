@@ -16,8 +16,11 @@ import 'package:pomodoro/screen/pomo/pomo_screen.dart';
 
 void main() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(ShaftAdapter());
+  Hive
+    ..registerAdapter(ShaftAdapter())
+    ..registerAdapter(ShaftStateAdapter());
   await Hive.openBox<Shaft>('shaftsBox');
+  await Hive.openBox<ShaftState>('shaftStatesBox');
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -26,7 +29,7 @@ class MyApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final shaftMode = ref.watch(shaftSelectorProvider);
+    final shaftMode = ref.watch(shaftViewModelProvider);
 
     return MaterialApp(
       theme: shaftMode == ShaftState.work

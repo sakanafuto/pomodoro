@@ -7,6 +7,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final loadingStateProvider =
     ChangeNotifierProvider((ref) => LoadingStateViewModel());
 
+/// TODO: 整理する
+
 class LoadingStateViewModel extends ChangeNotifier {
   bool isLoading = false;
 

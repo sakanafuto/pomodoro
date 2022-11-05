@@ -87,10 +87,8 @@ class PomoViewModel extends ChangeNotifier {
     double unitOfProgress,
     int settingTime,
   ) {
-    debugPrint('start!');
     var logSecond = 0;
     final progressBar = ref.watch(progressProvider);
-    debugPrint(ref.watch(shaftStateProvider).toString());
     // PomoState を working に変更する。
     changePomoWorking(ref);
     ref.read(timerProvider.notifier).update(
@@ -115,7 +113,7 @@ class PomoViewModel extends ChangeNotifier {
 
               // 1 分ごとにログを蓄積する。
               if (logSecond == 60) {
-                countLog(ref);
+                ref.read(shaftViewModelProvider.notifier).countLog();
                 logSecond = 0;
               }
 
@@ -153,32 +151,13 @@ class PomoViewModel extends ChangeNotifier {
     ).showModal<dynamic>(context);
   }
 
-  Future<void> countLog(WidgetRef ref) async {
-    final box = await Hive.openBox<Shaft>('shaftsBox');
-    final currentShaft = ref.watch(shaftStateProvider);
-    late final Shaft? log;
-
-    debugPrint(currentShaft.toString());
-    // if (ref.watch(shaftStateProvider) == ShaftState.work) {
-    log = box.get(
-      currentShaft.name,
-      defaultValue: Shaft(
-        type: currentShaft.toString(),
-        totalTime: 0,
-        date: DateTime.now(),
-      ),
-    );
-
-    log!.totalTime += 1;
-    await box.put(currentShaft.name, log);
-  }
-
   Future<String> showLog(ShaftState shaft) async {
     final box = await Hive.openBox<Shaft>('shaftsBox');
+    debugPrint(shaft.name);
     final log = box.get(
       shaft.name,
       defaultValue: Shaft(
-        type: ShaftState.work.toString(),
+        type: shaft.name,
         totalTime: 0,
         date: DateTime.now(),
       ),

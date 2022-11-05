@@ -22,8 +22,8 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     final viewModel = ref.watch(pomoViewModelProvider);
     final currentTime = ref.watch(displayTimeProvider);
     final settingTime = ref.watch(settingTimeProvider) ~/ 60;
+    final shaftState = ref.watch(shaftViewModelProvider);
     final icon = ref.watch(iconProvider);
-    final shaftState = ref.watch(shaftStateProvider);
 
     /// TODO: 長すぎ。ファイルに分けたい。
     Future<dynamic> switchFAB() {
@@ -231,22 +231,20 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                         onPressed: () {
                                                           ref
                                                               .read(
-                                                                shaftStateProvider
-                                                                    .notifier,
-                                                              )
-                                                              .update(
-                                                                (state) =>
-                                                                    ShaftState
-                                                                        .work,
-                                                              );
-                                                          ref
-                                                              .watch(
-                                                                shaftSelectorProvider
+                                                                shaftViewModelProvider
                                                                     .notifier,
                                                               )
                                                               .change(
                                                                 ShaftState.work,
                                                               );
+                                                          Navigator.popUntil(
+                                                            context,
+                                                            (
+                                                              Route<dynamic>
+                                                                  route,
+                                                            ) =>
+                                                                route.isFirst,
+                                                          );
                                                           viewModel.timePick(
                                                             context,
                                                             ref,
@@ -279,22 +277,20 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                         onPressed: () {
                                                           ref
                                                               .read(
-                                                                shaftStateProvider
-                                                                    .notifier,
-                                                              )
-                                                              .update(
-                                                                (state) =>
-                                                                    ShaftState
-                                                                        .hoby,
-                                                              );
-                                                          ref
-                                                              .watch(
-                                                                shaftSelectorProvider
+                                                                shaftViewModelProvider
                                                                     .notifier,
                                                               )
                                                               .change(
                                                                 ShaftState.hoby,
                                                               );
+                                                          Navigator.popUntil(
+                                                            context,
+                                                            (
+                                                              Route<dynamic>
+                                                                  route,
+                                                            ) =>
+                                                                route.isFirst,
+                                                          );
                                                           viewModel.timePick(
                                                             context,
                                                             ref,
@@ -327,22 +323,20 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                         onPressed: () {
                                                           ref
                                                               .read(
-                                                                shaftStateProvider
-                                                                    .notifier,
-                                                              )
-                                                              .update(
-                                                                (state) =>
-                                                                    ShaftState
-                                                                        .rest,
-                                                              );
-                                                          ref
-                                                              .watch(
-                                                                shaftSelectorProvider
+                                                                shaftViewModelProvider
                                                                     .notifier,
                                                               )
                                                               .change(
                                                                 ShaftState.rest,
                                                               );
+                                                          Navigator.popUntil(
+                                                            context,
+                                                            (
+                                                              Route<dynamic>
+                                                                  route,
+                                                            ) =>
+                                                                route.isFirst,
+                                                          );
                                                           viewModel.timePick(
                                                             context,
                                                             ref,
