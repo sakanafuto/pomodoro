@@ -14,7 +14,7 @@ class ShaftSelectScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentShaft = ref.watch(shaftSelectorProvider);
+    final currentShaft = ref.watch(shaftViewModelProvider);
 
     return Scaffold(
       appBar: const AppBarScreen(),
@@ -26,54 +26,46 @@ class ShaftSelectScreen extends HookConsumerWidget {
             groupValue: currentShaft as ShaftState?,
             onChanged: (ShaftState? newShaft) {
               ref
-                  .read(shaftSelectorProvider.notifier)
+                  .read(shaftViewModelProvider.notifier)
                   .change(newShaft ??= ShaftState.work);
-              ref
-                  .read(shaftStateProvider.notifier)
-                  .update((state) => ShaftState.work);
+
               Navigator.popUntil(
                 context,
                 (Route<dynamic> route) => route.isFirst,
               );
             },
-            title: Text(ShaftState.work.name),
-            secondary: const Icon(Icons.work),
+            title: const Text('仕事'),
           ),
           RadioListTile<ShaftState>(
             value: ShaftState.hoby,
             groupValue: currentShaft,
             onChanged: (ShaftState? newShaft) {
+              /// TODO: View は値を表示するに留める。viewModel.change で、viewModel もしくは useCase の StateNotifier で処理を行う。
               ref
-                  .read(shaftSelectorProvider.notifier)
+                  .read(shaftViewModelProvider.notifier)
                   .change(newShaft ??= ShaftState.hoby);
-              ref
-                  .read(shaftStateProvider.notifier)
-                  .update((state) => ShaftState.hoby);
+
               Navigator.popUntil(
                 context,
                 (Route<dynamic> route) => route.isFirst,
               );
             },
-            title: Text(ShaftState.hoby.name),
-            secondary: const Icon(Icons.design_services),
+            title: const Text('趣味'),
           ),
           RadioListTile<ShaftState>(
             value: ShaftState.rest,
             groupValue: currentShaft,
             onChanged: (ShaftState? newShaft) {
               ref
-                  .read(shaftSelectorProvider.notifier)
+                  .read(shaftViewModelProvider.notifier)
                   .change(newShaft ??= ShaftState.rest);
-              ref
-                  .read(shaftStateProvider.notifier)
-                  .update((state) => ShaftState.rest);
+
               Navigator.popUntil(
                 context,
                 (Route<dynamic> route) => route.isFirst,
               );
             },
-            title: Text(ShaftState.rest.name),
-            secondary: const Icon(Icons.mood),
+            title: const Text('休息'),
           ),
         ],
       ),

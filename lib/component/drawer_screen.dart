@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:gap/gap.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/constant/colors.dart';
 import 'package:pomodoro/model/shaft/shaft.dart';
-import 'package:pomodoro/model/shaft/shaft_state.dart';
+import 'package:pomodoro/provider/shaft_provider.dart';
 import 'package:pomodoro/screen/setting/setting_screen.dart';
-import 'package:pomodoro/screen/shaft/shaft_log.dart';
+import 'package:pomodoro/screen/shaft/shaft_log_screen.dart';
 import 'package:pomodoro/screen/shaft/shaft_select_screen.dart';
 
 class DrawerScreen extends HookConsumerWidget {
@@ -19,12 +19,6 @@ class DrawerScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pomoLog = Shaft(
-      type: ShaftState.work.toString(),
-      totalTime: 20,
-      date: DateTime.now(),
-    );
-
     return Drawer(
       width: 340,
       child: SafeArea(
@@ -46,12 +40,16 @@ class DrawerScreen extends HookConsumerWidget {
                   ),
                   onPressed: () async {
                     final box = await Hive.openBox<Shaft>('shaftsBox');
-                    await box.put('work', pomoLog);
 
-                    debugPrint('Total: ${box.get('work')?.type}');
+                    final workLog = box.get('work');
+
+                    const sampleInt = 30;
+                    workLog!.totalTime += sampleInt;
+
+                    await box.put('work', workLog);
                     debugPrint(
-                        'Total: ${box.get('work')?.totalTime.toString()}',);
-                    debugPrint('Total: ${box.get('work')?.date.toString()}');
+                      '${ref.watch(shaftViewModelProvider)}, ${box.get('work')?.totalTime.toString()}',
+                    );
                   },
                 ),
                 const Gap(64),
@@ -60,7 +58,7 @@ class DrawerScreen extends HookConsumerWidget {
                     Navigator.pop(context);
                     Navigator.of(context).push<dynamic>(
                       MaterialPageRoute<Widget>(
-                        builder: (context) => const ShaftLog(),
+                        builder: (context) => const ShaftLogScreen(),
                       ),
                     );
                   },

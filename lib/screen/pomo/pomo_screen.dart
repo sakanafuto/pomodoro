@@ -15,6 +15,8 @@ import 'package:pomodoro/component/size_route.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
 import 'package:pomodoro/screen/pomo/zen_screen.dart';
 
+/// TODO: タイマーの記憶
+
 class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
   PomoScreen({super.key});
 
@@ -76,7 +78,6 @@ class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
                 animateFromLastPercent: true,
                 lineHeight: 8,
                 barRadius: const Radius.circular(16),
-                // progressColor: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
