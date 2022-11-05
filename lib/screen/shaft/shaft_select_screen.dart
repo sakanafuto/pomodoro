@@ -14,7 +14,7 @@ class ShaftSelectScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentShaft = ref.watch(shaftSelectorProvider);
+    final currentShaft = ref.watch(shaftStateProvider);
 
     return Scaffold(
       appBar: const AppBarScreen(),
@@ -23,7 +23,7 @@ class ShaftSelectScreen extends HookConsumerWidget {
         children: <Widget>[
           RadioListTile<ShaftState>(
             value: ShaftState.work,
-            groupValue: currentShaft as ShaftState?,
+            groupValue: currentShaft,
             onChanged: (ShaftState? newShaft) {
               ref
                   .read(shaftSelectorProvider.notifier)
@@ -37,12 +37,12 @@ class ShaftSelectScreen extends HookConsumerWidget {
               );
             },
             title: Text(ShaftState.work.name),
-            secondary: const Icon(Icons.work),
           ),
           RadioListTile<ShaftState>(
             value: ShaftState.hoby,
             groupValue: currentShaft,
             onChanged: (ShaftState? newShaft) {
+              /// TODO: View は値を表示するに留める。viewModel.change で、viewModel もしくは useCase の StateNotifier で処理を行う。
               ref
                   .read(shaftSelectorProvider.notifier)
                   .change(newShaft ??= ShaftState.hoby);
@@ -55,7 +55,6 @@ class ShaftSelectScreen extends HookConsumerWidget {
               );
             },
             title: Text(ShaftState.hoby.name),
-            secondary: const Icon(Icons.design_services),
           ),
           RadioListTile<ShaftState>(
             value: ShaftState.rest,
@@ -73,7 +72,6 @@ class ShaftSelectScreen extends HookConsumerWidget {
               );
             },
             title: Text(ShaftState.rest.name),
-            secondary: const Icon(Icons.mood),
           ),
         ],
       ),

@@ -24,6 +24,8 @@ class ShaftSelector extends StateNotifier<ShaftState> {
     );
   }
 
+  /// TODO: hive 移行
+
   Future<void> change(ShaftState shaft) async {
     await _save(shaft.index);
     state = shaft;

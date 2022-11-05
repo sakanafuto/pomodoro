@@ -17,6 +17,7 @@ import 'package:pomodoro/component/utils.dart';
 import 'package:pomodoro/model/shaft/shaft.dart';
 import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
+import 'package:pomodoro/provider/shaft_provider.dart';
 
 class PomoViewModel extends ChangeNotifier {
   PomoViewModel(this._ref);
@@ -89,6 +90,7 @@ class PomoViewModel extends ChangeNotifier {
     debugPrint('start!');
     var logSecond = 0;
     final progressBar = ref.watch(progressProvider);
+    debugPrint(ref.watch(shaftStateProvider).toString());
     // PomoState を working に変更する。
     changePomoWorking(ref);
     ref.read(timerProvider.notifier).update(
@@ -113,7 +115,7 @@ class PomoViewModel extends ChangeNotifier {
 
               // 1 分ごとにログを蓄積する。
               if (logSecond == 60) {
-                countLog();
+                countLog(ref);
                 logSecond = 0;
               }
 
@@ -151,10 +153,30 @@ class PomoViewModel extends ChangeNotifier {
     ).showModal<dynamic>(context);
   }
 
-  Future<void> countLog() async {
+  Future<void> countLog(WidgetRef ref) async {
     final box = await Hive.openBox<Shaft>('shaftsBox');
-    final workLog = box.get(
-      'work',
+    final currentShaft = ref.watch(shaftStateProvider);
+    late final Shaft? log;
+
+    debugPrint(currentShaft.toString());
+    // if (ref.watch(shaftStateProvider) == ShaftState.work) {
+    log = box.get(
+      currentShaft.name,
+      defaultValue: Shaft(
+        type: currentShaft.toString(),
+        totalTime: 0,
+        date: DateTime.now(),
+      ),
+    );
+
+    log!.totalTime += 1;
+    await box.put(currentShaft.name, log);
+  }
+
+  Future<String> showLog(ShaftState shaft) async {
+    final box = await Hive.openBox<Shaft>('shaftsBox');
+    final log = box.get(
+      shaft.name,
       defaultValue: Shaft(
         type: ShaftState.work.toString(),
         totalTime: 0,
@@ -162,14 +184,6 @@ class PomoViewModel extends ChangeNotifier {
       ),
     );
 
-    workLog!.totalTime += 1;
-    await box.put('work', workLog);
-  }
-
-  Future<String> showLog() async {
-    final box = await Hive.openBox<Shaft>('shaftsBox');
-    final workLog = box.get('work');
-
-    return workLog!.totalTime.toString();
+    return log!.totalTime.toString();
   }
 }

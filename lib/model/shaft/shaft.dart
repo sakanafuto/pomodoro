@@ -8,6 +8,7 @@ part 'shaft.g.dart';
 @HiveType(typeId: 0, adapterName: 'ShaftAdapter')
 class Shaft extends HiveObject {
   Shaft({required this.type, required this.totalTime, required this.date});
+
   @HiveField(0)
   final String type;
 
