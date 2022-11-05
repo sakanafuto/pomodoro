@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import 'package:pomodoro/constant/colors.dart';
 import 'package:pomodoro/model/shaft/shaft.dart';
+import 'package:pomodoro/provider/shaft_provider.dart';
 import 'package:pomodoro/screen/setting/setting_screen.dart';
 import 'package:pomodoro/screen/shaft/shaft_log_screen.dart';
 import 'package:pomodoro/screen/shaft/shaft_select_screen.dart';
@@ -47,7 +48,7 @@ class DrawerScreen extends HookConsumerWidget {
 
                     await box.put('work', workLog);
                     debugPrint(
-                      '${box.get('work')?.type}, ${box.get('work')?.totalTime.toString()}',
+                      '${ref.watch(shaftViewModelProvider)}, ${box.get('work')?.totalTime.toString()}',
                     );
                   },
                 ),
