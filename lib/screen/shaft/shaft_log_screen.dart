@@ -2,14 +2,16 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/component/drawer_screen.dart';
-import 'package:pomodoro/constant/colors.dart';
 import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
 import 'package:pomodoro/screen/loading_state_view_model.dart';
+
+// TODO: 分数のテキストの色が変わらない！
 
 class ShaftLogScreen extends HookConsumerWidget {
   const ShaftLogScreen({super.key});
@@ -31,10 +33,12 @@ class ShaftLogScreen extends HookConsumerWidget {
             icon: const Icon(Icons.close),
           )
         ],
+        title: const Text('集中した時間'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
+          const Gap(8),
           // Hive から呼び出したログの値が入る。
           FutureBuilder<String>(
             future: pomoViewModel.showLog(ShaftState.work),
@@ -44,11 +48,21 @@ class ShaftLogScreen extends HookConsumerWidget {
               if (snapshot.hasData) {
                 children = <Widget>[
                   Center(
-                    child: Text(
-                      '仕事に集中した時間『${snapshot.data!}』分。',
-                      style: TextStyle(
-                        fontSize: 40,
-                        color: pomoTheme(workColorScheme).primaryColor,
+                    child: RichText(
+                      text: TextSpan(
+                        text: '仕事　',
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: snapshot.data!,
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          const TextSpan(text: '　分'),
+                        ],
                       ),
                     ),
                   ),
@@ -74,11 +88,21 @@ class ShaftLogScreen extends HookConsumerWidget {
               if (snapshot.hasData) {
                 children = <Widget>[
                   Center(
-                    child: Text(
-                      '趣味に集中した時間『${snapshot.data!}』分。',
-                      style: TextStyle(
-                        fontSize: 40,
-                        color: pomoTheme(workColorScheme).primaryColor,
+                    child: RichText(
+                      text: TextSpan(
+                        text: '趣味　',
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: snapshot.data!,
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          const TextSpan(text: '　分'),
+                        ],
                       ),
                     ),
                   ),
@@ -104,11 +128,21 @@ class ShaftLogScreen extends HookConsumerWidget {
               if (snapshot.hasData) {
                 children = <Widget>[
                   Center(
-                    child: Text(
-                      '休息に集中した時間『${snapshot.data!}』分。',
-                      style: TextStyle(
-                        fontSize: 40,
-                        color: pomoTheme(workColorScheme).primaryColor,
+                    child: RichText(
+                      text: TextSpan(
+                        text: '休息　',
+                        style: DefaultTextStyle.of(context).style,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: snapshot.data!,
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          const TextSpan(text: '　分'),
+                        ],
                       ),
                     ),
                   ),
@@ -125,6 +159,8 @@ class ShaftLogScreen extends HookConsumerWidget {
               );
             },
           ),
+
+          const Gap(32),
         ],
       ),
       drawer: const DrawerScreen(),

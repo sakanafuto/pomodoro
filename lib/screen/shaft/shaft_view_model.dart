@@ -55,4 +55,6 @@ class ShaftViewModel extends StateNotifier<ShaftState> {
     log!.totalTime += 1;
     await box.put(state.name, log);
   }
+
+  String stateName(ShaftState shaft) => shaft.displayName;
 }

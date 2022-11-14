@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:pomodoro/component/button.dart';
 import 'package:pomodoro/component/size_route.dart';
 import 'package:pomodoro/constant/colors.dart';
 import 'package:pomodoro/model/pomo/pomo_state.dart';
@@ -22,8 +23,8 @@ class FloatingActionButtonScreen extends ConsumerWidget {
     final viewModel = ref.watch(pomoViewModelProvider);
     final currentTime = ref.watch(displayTimeProvider);
     final settingTime = ref.watch(settingTimeProvider) ~/ 60;
-    final shaftState = ref.watch(shaftViewModelProvider);
     final icon = ref.watch(iconProvider);
+    final ss = ref.watch(shaftViewModelProvider);
 
     /// TODO: 長すぎ。ファイルに分けたい。
     Future<dynamic> switchFAB() {
@@ -134,22 +135,19 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Container(
-                              color: Theme.of(context).colorScheme.background,
-                              margin: const EdgeInsets.all(16),
-                              child: TextButton(
-                                onPressed: () =>
-                                    viewModel.stopPomo(context, ref),
-                                child: const Text(
-                                  'ポモを終了する',
-                                  style: TextStyle(
-                                    color: textColor,
-                                  ),
-                                ),
+                            // TODO: コンポーネント化ほかにも適用する。
+                            ElevatedButton(
+                              onPressed: () => viewModel.stopPomo(context, ref),
+                              style: pomoElevatedButtonStyle,
+                              child: const Text(
+                                'ポモを終了する',
+                                style: TextStyle(color: textColor),
                               ),
                             ),
+                            const Gap(24)
                           ],
                         ),
+                        const Gap(24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -169,6 +167,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
+                        const Gap(24),
                       ],
                     ),
                   ),
@@ -362,7 +361,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                   );
                                 },
                                 child: const Text(
-                                  '軸を変更する。',
+                                  '軸を変更する',
                                   style: TextStyle(
                                     color: textColor,
                                   ),
@@ -383,14 +382,30 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                   ref,
                                   settingTime,
                                 ),
-                                child: Text(
-                                  '\'$shaftState\'で集中する',
-                                  style: const TextStyle(
-                                    color: textColor,
+                                // TODO: RichText
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: DefaultTextStyle.of(context).style,
+                                    text: '',
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text:
+                                            // ignore: cast_nullable_to_non_nullable
+                                            (ss as ShaftState).displayName,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: textColor,
+                                        ),
+                                      ),
+                                      const TextSpan(
+                                        text: ' で集中する',
+                                        // style: TextStyle(color: subTextColor),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ],
