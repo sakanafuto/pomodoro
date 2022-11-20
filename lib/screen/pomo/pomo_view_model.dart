@@ -1,7 +1,4 @@
 // Dart imports:
-// ignore_for_file: parameter_assignments
-
-// Dart imports:
 import 'dart:async';
 
 // Flutter imports:

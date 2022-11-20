@@ -35,6 +35,7 @@ class ShaftLogScreen extends HookConsumerWidget {
         ],
         title: const Text('集中した時間'),
       ),
+      drawer: const DrawerScreen(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -163,7 +164,6 @@ class ShaftLogScreen extends HookConsumerWidget {
           const Gap(32),
         ],
       ),
-      drawer: const DrawerScreen(),
     );
   }
 }

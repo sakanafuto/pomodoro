@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:pomodoro/component/drawer_screen.dart';
 import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/shaft_provider.dart';
 
@@ -31,12 +32,13 @@ class ShaftSelectScreen extends HookConsumerWidget {
         ],
         title: const Text('軸をえらぶ'),
       ),
+      drawer: const DrawerScreen(),
       body: ListView(
         padding: const EdgeInsets.all(8),
         children: <Widget>[
           RadioListTile<ShaftState>(
             value: ShaftState.work,
-            groupValue: currentShaft as ShaftState?,
+            groupValue: currentShaft,
             activeColor: Theme.of(context).colorScheme.primary,
             onChanged: (ShaftState? newShaft) {
               ref
