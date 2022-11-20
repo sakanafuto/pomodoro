@@ -29,7 +29,7 @@ class ResetScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.only(left: 16),
                       child: const Text(
-                        'ログを削除する',
+                        'ログをリセットする',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -40,8 +40,22 @@ class ResetScreen extends StatelessWidget {
                     const Gap(10),
                     const ItemCard(
                       screen: SizedBox(),
-                      title: 'Settings Item 01',
+                      title: '仕事',
                       shaft: ShaftState.work,
+                    ),
+                    const ItemCard(
+                      screen: SizedBox(),
+                      title: '趣味',
+                      shaft: ShaftState.hoby,
+                    ),
+                    const ItemCard(
+                      screen: SizedBox(),
+                      title: '休息',
+                      shaft: ShaftState.rest,
+                    ),
+                    const ItemCard(
+                      screen: SizedBox(),
+                      title: 'すべてのログをリセット',
                     ),
                     const Gap(40),
                     Container(
@@ -73,13 +87,13 @@ class ItemCard extends ConsumerWidget {
     required this.title,
     this.textColor,
     required this.screen,
-    required this.shaft,
+    this.shaft,
   });
 
   final Color? textColor;
   final String title;
   final Widget screen;
-  final ShaftState shaft;
+  final ShaftState? shaft;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -106,8 +120,11 @@ class ItemCard extends ConsumerWidget {
           ],
         ),
       ),
-      onTap: () =>
-          ref.read(shaftViewModelProvider.notifier).resetShaftLog(shaft),
+      onTap: () {
+        shaft != null
+            ? ref.read(shaftViewModelProvider.notifier).resetShaftLog(shaft!)
+            : ref.read(shaftViewModelProvider.notifier).resetAllShaftLog();
+      },
     );
   }
 }

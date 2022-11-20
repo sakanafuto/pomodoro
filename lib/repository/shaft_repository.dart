@@ -7,4 +7,5 @@ abstract class ShaftRepository {
   Future<void> save(ShaftState shaftState);
   Future<ShaftState?> get();
   Future<void> reset(ShaftState shaftState);
+  Future<void> resetAll();
 }

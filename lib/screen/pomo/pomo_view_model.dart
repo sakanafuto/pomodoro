@@ -16,11 +16,11 @@ import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
 import 'package:pomodoro/provider/shaft_provider.dart';
 
-class PomoViewModel extends ChangeNotifier {
-  PomoViewModel(this._ref);
+class PomoViewModel extends Notifier<int> {
+  PomoViewModel();
 
-  // ignore: unused_field
-  final Ref _ref;
+  @override
+  int build() => 0;
 
   /// タイマーを開始する。
   Future<void> startPomo(BuildContext context, WidgetRef ref) async {
@@ -32,7 +32,6 @@ class PomoViewModel extends ChangeNotifier {
     startTimer(context, ref, progress, unitOfProgress, settingTime);
 
     Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
-    notifyListeners();
   }
 
   /// タイマーを再開する。
@@ -46,7 +45,6 @@ class PomoViewModel extends ChangeNotifier {
     startTimer(context, ref, progress, unitOfProgress, settingTime);
 
     Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
-    notifyListeners();
   }
 
   /// タイマーを一時停止する。
@@ -59,7 +57,6 @@ class PomoViewModel extends ChangeNotifier {
     debugPrint('pause! reaminingTime is ${ref.watch(remainingTimeProvider)}.');
 
     Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
-    notifyListeners();
   }
 
   /// タイマーを終了する。
@@ -73,7 +70,6 @@ class PomoViewModel extends ChangeNotifier {
     ref.read(displayTimeProvider.notifier).update((state) => settingTime);
 
     Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
-    notifyListeners();
   }
 
   /// タイマーのロジックを担う。
@@ -119,8 +115,6 @@ class PomoViewModel extends ChangeNotifier {
                   ref.watch(displayTimeProvider.notifier).state == 0) {
                 stopPomo(context, ref);
               }
-
-              notifyListeners();
             },
           ),
         );

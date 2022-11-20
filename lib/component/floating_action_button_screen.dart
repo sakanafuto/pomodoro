@@ -20,7 +20,6 @@ class FloatingActionButtonScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(pomoViewModelProvider);
     final currentTime = ref.watch(displayTimeProvider);
     final settingTime = ref.watch(settingTimeProvider) ~/ 60;
     final icon = ref.watch(iconProvider);
@@ -51,8 +50,9 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () =>
-                                    viewModel.stopPomo(context, ref),
+                                onPressed: () => ref
+                                    .read(pomoViewModelProvider.notifier)
+                                    .stopPomo(context, ref),
                                 child: const Text(
                                   'ポモを終了する',
                                   style: TextStyle(
@@ -95,11 +95,13 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () => viewModel.pausePomo(
-                                  context,
-                                  ref,
-                                  currentTime,
-                                ),
+                                onPressed: () => ref
+                                    .read(pomoViewModelProvider.notifier)
+                                    .pausePomo(
+                                      context,
+                                      ref,
+                                      currentTime,
+                                    ),
                                 child: const Text(
                                   '一時停止',
                                   style: TextStyle(
@@ -137,7 +139,9 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           children: [
                             // TODO: コンポーネント化ほかにも適用する。
                             ElevatedButton(
-                              onPressed: () => viewModel.stopPomo(context, ref),
+                              onPressed: () => ref
+                                  .read(pomoViewModelProvider.notifier)
+                                  .stopPomo(context, ref),
                               style: pomoElevatedButtonStyle,
                               child: const Text(
                                 'ポモを終了する',
@@ -155,8 +159,9 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () =>
-                                    viewModel.restartPomo(context, ref),
+                                onPressed: () => ref
+                                    .read(pomoViewModelProvider.notifier)
+                                    .restartPomo(context, ref),
                                 child: const Text(
                                   '再開',
                                   style: TextStyle(
@@ -244,11 +249,15 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                             ) =>
                                                                 route.isFirst,
                                                           );
-                                                          viewModel.timePick(
-                                                            context,
-                                                            ref,
-                                                            settingTime,
-                                                          );
+                                                          ref
+                                                              .read(
+                                                                  pomoViewModelProvider
+                                                                      .notifier,)
+                                                              .timePick(
+                                                                context,
+                                                                ref,
+                                                                settingTime,
+                                                              );
                                                         },
                                                         child: const Text(
                                                           '仕事',
@@ -290,11 +299,15 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                             ) =>
                                                                 route.isFirst,
                                                           );
-                                                          viewModel.timePick(
-                                                            context,
-                                                            ref,
-                                                            settingTime,
-                                                          );
+                                                          ref
+                                                              .read(
+                                                                  pomoViewModelProvider
+                                                                      .notifier,)
+                                                              .timePick(
+                                                                context,
+                                                                ref,
+                                                                settingTime,
+                                                              );
                                                         },
                                                         child: const Text(
                                                           '趣味',
@@ -336,11 +349,15 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                             ) =>
                                                                 route.isFirst,
                                                           );
-                                                          viewModel.timePick(
-                                                            context,
-                                                            ref,
-                                                            settingTime,
-                                                          );
+                                                          ref
+                                                              .read(
+                                                                  pomoViewModelProvider
+                                                                      .notifier,)
+                                                              .timePick(
+                                                                context,
+                                                                ref,
+                                                                settingTime,
+                                                              );
                                                         },
                                                         child: const Text(
                                                           '休息',
@@ -377,11 +394,13 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () => viewModel.timePick(
-                                  context,
-                                  ref,
-                                  settingTime,
-                                ),
+                                onPressed: () => ref
+                                    .read(pomoViewModelProvider.notifier)
+                                    .timePick(
+                                      context,
+                                      ref,
+                                      settingTime,
+                                    ),
                                 // TODO: RichText
                                 child: RichText(
                                   text: TextSpan(
@@ -391,7 +410,7 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                       TextSpan(
                                         text:
                                             // ignore: cast_nullable_to_non_nullable
-                                            (ss as ShaftState).displayName,
+                                            ss.displayName,
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: textColor,

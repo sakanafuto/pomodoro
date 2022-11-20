@@ -60,7 +60,11 @@ class ShaftViewModel extends Notifier<ShaftState> {
     await box.put(state.name, log);
   }
 
+  // 選択された軸のログを削除する
   Future<void> resetShaftLog(ShaftState shaft) => _repository.reset(shaft);
+
+  // 選択された軸のログを削除する
+  Future<void> resetAllShaftLog() => _repository.resetAll();
 
   // ハードコーディングをやめるときにつかう
   String stateName(ShaftState shaft) => shaft.displayName;

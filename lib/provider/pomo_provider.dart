@@ -18,7 +18,7 @@ final timerProvider = StateProvider<Timer>(
 
 // pomoViewModel を監視する。
 final pomoViewModelProvider =
-    ChangeNotifierProvider<PomoViewModel>(PomoViewModel.new);
+    NotifierProvider<PomoViewModel, int>(PomoViewModel.new);
 
 // ドラムロールで選択した時間を監視する。
 final settingTimeProvider = StateProvider<int>((ref) => 1 * 60);

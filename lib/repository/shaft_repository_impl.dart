@@ -47,4 +47,24 @@ class ShaftRepositoryImpl implements ShaftRepository {
       ),
     );
   }
+
+  @override
+  Future<void> resetAll() async {
+    final box = await Hive.openBox<Shaft>('shaftsBox');
+    box.get('work');
+    await box.put(
+      'work',
+      Shaft(type: 'work', totalTime: 0, date: DateTime.now()),
+    );
+    box.get('hoby');
+    await box.put(
+      'hoby',
+      Shaft(type: 'hoby', totalTime: 0, date: DateTime.now()),
+    );
+    box.get('rest');
+    await box.put(
+      'rest',
+      Shaft(type: 'rest', totalTime: 0, date: DateTime.now()),
+    );
+  }
 }
