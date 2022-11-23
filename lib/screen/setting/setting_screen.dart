@@ -8,7 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/component/app_bar_screen.dart';
-import 'package:pomodoro/component/drawer_screen.dart';
 import 'package:pomodoro/component/pupup/dot.dart';
 import 'package:pomodoro/component/pupup/dots_picker.dart';
 import 'package:pomodoro/screen/setting/reset_screen.dart';
@@ -222,7 +221,7 @@ class ItemCard extends ConsumerWidget {
               ),
             ),
             caption != null
-                ? Container(
+                ? SizedBox(
                     height: 30,
                     width: 30,
                     child: DotsPicker(
