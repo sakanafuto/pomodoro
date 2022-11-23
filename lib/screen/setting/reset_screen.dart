@@ -1,10 +1,9 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 // Project imports:
 import 'package:pomodoro/component/app_bar_screen.dart';
 import 'package:pomodoro/model/shaft/shaft_state.dart';
@@ -57,19 +56,6 @@ class ResetScreen extends StatelessWidget {
                       screen: SizedBox(),
                       title: 'すべてのログをリセット',
                     ),
-                    const Gap(40),
-                    Container(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: const Text(
-                        'Others',
-                        style: TextStyle(
-                          // fontFamily: 'NotoSansJP',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF999999),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -121,9 +107,23 @@ class ItemCard extends ConsumerWidget {
         ),
       ),
       onTap: () {
-        shaft != null
-            ? ref.read(shaftViewModelProvider.notifier).resetShaftLog(shaft!)
-            : ref.read(shaftViewModelProvider.notifier).resetAllShaftLog();
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          title: '本当にリセットしてもよろしいですか？',
+          btnCancelOnPress: () {},
+          btnOkOnPress: () {
+            shaft != null
+                ? ref
+                    .read(shaftViewModelProvider.notifier)
+                    .resetShaftLog(shaft!)
+                : ref.read(shaftViewModelProvider.notifier).resetAllShaftLog();
+            Navigator.popUntil(
+              context,
+              (Route<dynamic> route) => route.isFirst,
+            );
+          },
+        ).show();
       },
     );
   }
