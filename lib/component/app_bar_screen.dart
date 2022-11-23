@@ -7,12 +7,15 @@ import 'package:gap/gap.dart';
 // TODO: leading と actions の有無をを引数で渡して条件分岐したい。
 
 class AppBarScreen extends StatelessWidget implements PreferredSizeWidget {
-  const AppBarScreen({super.key});
+  const AppBarScreen({super.key, this.title});
+
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.background,
+      title: title != null ? Text(title!) : const Text(''),
       elevation: 0,
     );
   }
@@ -22,12 +25,17 @@ class AppBarScreen extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class AppBarPopScreen extends StatelessWidget implements PreferredSizeWidget {
-  const AppBarPopScreen({super.key});
+  const AppBarPopScreen({super.key, this.title, required this.hasBackButton});
+
+  final String? title;
+  final bool hasBackButton;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: hasBackButton,
       backgroundColor: Theme.of(context).colorScheme.background,
+      title: title != null ? Text(title!) : const Text(''),
       elevation: 0,
       actions: [
         IconButton(
