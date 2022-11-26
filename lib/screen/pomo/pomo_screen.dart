@@ -71,13 +71,14 @@ class PomoScreenState extends ConsumerState<PomoScreen>
     );
 
     // バックグラウンドで経過した時間が設定時間を超えていた場合、ポモを止める
-    // if (remainingTime >= 0) {
-    debugPrint('over');
-    ref
-        .read(pomoViewModelProvider.notifier)
-        .stopPomo(context, ref, isInterruption: true);
-    // return;
-    // }
+    if (ref.read(remainingTimeProvider) <= 0) {
+      debugPrint('over');
+      ref
+          .read(pomoViewModelProvider.notifier)
+          .stopPomo(context, ref, isInterruption: true);
+      debugPrint(ref.read(displayTimeProvider).toString());
+      return;
+    }
 
     // ポモを再開する
     ref.read(pomoViewModelProvider.notifier).restartPomo(context, ref);
@@ -87,7 +88,6 @@ class PomoScreenState extends ConsumerState<PomoScreen>
           (state) =>
               (settingTime - ref.read(remainingTimeProvider)) / settingTime,
         );
-
     debugPrint('resumed!');
   }
 

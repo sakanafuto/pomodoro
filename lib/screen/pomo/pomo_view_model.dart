@@ -82,6 +82,7 @@ class PomoViewModel extends Notifier<int> {
     ref.read(timerProvider).cancel();
     ref.read(progressProvider.notifier).update((state) => 0.0);
     ref.read(displayTimeProvider.notifier).update((state) => settingTime);
+    ref.read(remainingTimeProvider.notifier).update((state) => 0);
 
     Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
   }
