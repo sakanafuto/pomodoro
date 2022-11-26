@@ -50,9 +50,18 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                               color: Theme.of(context).colorScheme.background,
                               margin: const EdgeInsets.all(16),
                               child: TextButton(
-                                onPressed: () => ref
-                                    .read(pomoViewModelProvider.notifier)
-                                    .stopPomo(context, ref),
+                                onPressed: () {
+                                  ref
+                                      .read(remainingTimeProvider.notifier)
+                                      .update((state) => currentTime);
+                                  ref
+                                      .read(pomoViewModelProvider.notifier)
+                                      .stopPomo(
+                                        context,
+                                        ref,
+                                        isInterruption: false,
+                                      );
+                                },
                                 child: const Text(
                                   'ポモを終了する',
                                   style: TextStyle(
@@ -139,9 +148,18 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                           children: [
                             // TODO: コンポーネント化ほかにも適用する。
                             ElevatedButton(
-                              onPressed: () => ref
-                                  .read(pomoViewModelProvider.notifier)
-                                  .stopPomo(context, ref),
+                              onPressed: () {
+                                ref
+                                    .read(remainingTimeProvider.notifier)
+                                    .update((state) => currentTime);
+                                ref
+                                    .read(pomoViewModelProvider.notifier)
+                                    .stopPomo(
+                                      context,
+                                      ref,
+                                      isInterruption: false,
+                                    );
+                              },
                               style: pomoElevatedButtonStyle,
                               child: const Text(
                                 'ポモを終了する',
@@ -251,8 +269,9 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                           );
                                                           ref
                                                               .read(
-                                                                  pomoViewModelProvider
-                                                                      .notifier,)
+                                                                pomoViewModelProvider
+                                                                    .notifier,
+                                                              )
                                                               .timePick(
                                                                 context,
                                                                 ref,
@@ -301,8 +320,9 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                           );
                                                           ref
                                                               .read(
-                                                                  pomoViewModelProvider
-                                                                      .notifier,)
+                                                                pomoViewModelProvider
+                                                                    .notifier,
+                                                              )
                                                               .timePick(
                                                                 context,
                                                                 ref,
@@ -351,8 +371,9 @@ class FloatingActionButtonScreen extends ConsumerWidget {
                                                           );
                                                           ref
                                                               .read(
-                                                                  pomoViewModelProvider
-                                                                      .notifier,)
+                                                                pomoViewModelProvider
+                                                                    .notifier,
+                                                              )
                                                               .timePick(
                                                                 context,
                                                                 ref,

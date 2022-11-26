@@ -52,7 +52,7 @@ class PomoViewModel extends Notifier<int> {
     ref.read(timerProvider).cancel();
     ref
         .read(remainingTimeProvider.notifier)
-        .update((state) => currentProgressTime - 1);
+        .update((state) => currentProgressTime);
     changePomoPausing(ref);
     debugPrint('pause! reaminingTime is ${ref.watch(remainingTimeProvider)}.');
 
@@ -60,8 +60,22 @@ class PomoViewModel extends Notifier<int> {
   }
 
   /// タイマーを終了する。
-  void stopPomo(BuildContext context, WidgetRef ref) {
+  void stopPomo(
+    BuildContext context,
+    WidgetRef ref, {
+    required bool isInterruption,
+  }) {
     final settingTime = ref.watch(settingTimeProvider);
+
+    isInterruption
+        ? ref
+            .read(shaftViewModelProvider.notifier)
+            .countLog(settingTime.toDouble() ~/ 60)
+        : ref.read(shaftViewModelProvider.notifier).countLog(
+              (ref.read(settingTimeProvider) - ref.read(remainingTimeProvider))
+                      .toDouble() ~/
+                  60,
+            );
 
     // PomoState を stopping にする。
     changePomoStopping(ref);
@@ -80,7 +94,6 @@ class PomoViewModel extends Notifier<int> {
     double unitOfProgress,
     int settingTime,
   ) {
-    var logSecond = 0;
     final progressBar = ref.watch(progressProvider);
     // PomoState を working に変更する。
     changePomoWorking(ref);
@@ -89,9 +102,9 @@ class PomoViewModel extends Notifier<int> {
             // 1 秒間隔で進行する。
             const Duration(seconds: 1),
             (Timer timer) {
+              debugPrint('count');
               // 毎秒ディスプレイの数値をカウントダウンする。
               ref.read(displayTimeProvider.notifier).state--;
-              logSecond++;
 
               // n% / 100% を毎秒進行させる。
               // progressProvider を用いずにローカルの progress でカウントするのは、
@@ -105,15 +118,15 @@ class PomoViewModel extends Notifier<int> {
               }
 
               // 1 分ごとにログを蓄積する。
-              if (logSecond == 60) {
-                ref.read(shaftViewModelProvider.notifier).countLog();
-                logSecond = 0;
-              }
+              // if (logSecond == 60) {
+              //   ref.read(shaftViewModelProvider.notifier).countLog();
+              //   logSecond = 0;
+              // }
 
               // プログレスが 1.0 を超えるか、ディスプレイの数値が 0 になった場合、タイマーを終了する。
               if (1.0 <= progress ||
                   ref.watch(displayTimeProvider.notifier).state == 0) {
-                stopPomo(context, ref);
+                stopPomo(context, ref, isInterruption: true);
               }
             },
           ),
