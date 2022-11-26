@@ -26,7 +26,6 @@ class DrawerScreen extends HookConsumerWidget {
           children: <Widget>[
             const Gap(32),
             Column(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 const Gap(32),

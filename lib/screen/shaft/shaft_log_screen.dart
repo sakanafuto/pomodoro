@@ -9,7 +9,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pomodoro/component/drawer_screen.dart';
 import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
-import 'package:pomodoro/screen/loading_state_view_model.dart';
 
 // TODO: 分数のテキストの色が変わらない！
 
@@ -18,9 +17,6 @@ class ShaftLogScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pomoViewModel = ref.watch(pomoViewModelProvider);
-    final loading = ref.watch(loadingStateProvider);
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -35,13 +31,16 @@ class ShaftLogScreen extends HookConsumerWidget {
         ],
         title: const Text('集中した時間'),
       ),
+      drawer: const DrawerScreen(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           const Gap(8),
           // Hive から呼び出したログの値が入る。
           FutureBuilder<String>(
-            future: pomoViewModel.showLog(ShaftState.work),
+            future: ref
+                .read(pomoViewModelProvider.notifier)
+                .showLog(ShaftState.work),
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               List<Widget> children;
 
@@ -68,7 +67,14 @@ class ShaftLogScreen extends HookConsumerWidget {
                   ),
                 ];
               } else {
-                children = <Widget>[loading.createProgressIndicator()];
+                children = <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(
+                      color: Colors.green,
+                    ),
+                  ),
+                ];
               }
 
               return Center(
@@ -81,7 +87,9 @@ class ShaftLogScreen extends HookConsumerWidget {
           ),
           // Hive から呼び出したログの値が入る。
           FutureBuilder<String>(
-            future: pomoViewModel.showLog(ShaftState.hoby),
+            future: ref
+                .read(pomoViewModelProvider.notifier)
+                .showLog(ShaftState.hoby),
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               List<Widget> children;
 
@@ -108,7 +116,14 @@ class ShaftLogScreen extends HookConsumerWidget {
                   ),
                 ];
               } else {
-                children = <Widget>[loading.createProgressIndicator()];
+                children = <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(
+                      color: Colors.green,
+                    ),
+                  ),
+                ];
               }
 
               return Center(
@@ -121,7 +136,9 @@ class ShaftLogScreen extends HookConsumerWidget {
           ),
           // Hive から呼び出したログの値が入る。
           FutureBuilder<String>(
-            future: pomoViewModel.showLog(ShaftState.rest),
+            future: ref
+                .read(pomoViewModelProvider.notifier)
+                .showLog(ShaftState.rest),
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               List<Widget> children;
 
@@ -148,7 +165,14 @@ class ShaftLogScreen extends HookConsumerWidget {
                   ),
                 ];
               } else {
-                children = <Widget>[loading.createProgressIndicator()];
+                children = <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(
+                      color: Colors.green,
+                    ),
+                  ),
+                ];
               }
 
               return Center(
@@ -163,7 +187,6 @@ class ShaftLogScreen extends HookConsumerWidget {
           const Gap(32),
         ],
       ),
-      drawer: const DrawerScreen(),
     );
   }
 }

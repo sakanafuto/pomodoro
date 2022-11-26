@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:pomodoro/model/shaft/shaft.dart';
 import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/repository/shaft_repository.dart';
 
@@ -31,5 +32,39 @@ class ShaftRepositoryImpl implements ShaftRepository {
   Future<ShaftState?> get() async {
     final box = await Hive.openBox<ShaftState>('shaftStatesBox');
     return box.get('shaftState', defaultValue: ShaftState.work);
+  }
+
+  @override
+  Future<void> reset(ShaftState shaft) async {
+    final box = await Hive.openBox<Shaft>('shaftsBox');
+    box.get(shaft.name);
+    await box.put(
+      shaft.name,
+      Shaft(
+        type: shaft.name,
+        totalTime: 0,
+        date: DateTime.now(),
+      ),
+    );
+  }
+
+  @override
+  Future<void> resetAll() async {
+    final box = await Hive.openBox<Shaft>('shaftsBox');
+    box.get('work');
+    await box.put(
+      'work',
+      Shaft(type: 'work', totalTime: 0, date: DateTime.now()),
+    );
+    box.get('hoby');
+    await box.put(
+      'hoby',
+      Shaft(type: 'hoby', totalTime: 0, date: DateTime.now()),
+    );
+    box.get('rest');
+    await box.put(
+      'rest',
+      Shaft(type: 'rest', totalTime: 0, date: DateTime.now()),
+    );
   }
 }
