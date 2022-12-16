@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -17,25 +16,99 @@ import 'package:pomodoro/screen/pomo/zen_screen.dart';
 
 /// TODO: タイマーの記憶
 
-class PomoScreen extends HookConsumerWidget with WidgetsBindingObserver {
-  PomoScreen({super.key});
+class PomoScreen extends ConsumerStatefulWidget {
+  const PomoScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => PomoScreenState();
+}
+
+class PomoScreenState extends ConsumerState<PomoScreen>
+    with WidgetsBindingObserver {
+  late DateTime _pausedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _handlePaused(WidgetRef ref) {
+    final currentTime = ref.watch(displayTimeProvider);
+
+    // タイマーが動いている状態でバックグランドに移行している
+    if (ref.read(timerProvider).isActive) {
+      debugPrint('timer is working');
+      ref
+          .read(pomoViewModelProvider.notifier)
+          .pausePomo(context, ref, currentTime);
+    }
+
+    // バックグラウンドに遷移した時間を記録
+    _pausedTime = DateTime.now();
+    debugPrint('paused!');
+  }
+
+  void _handleResumed(WidgetRef ref) {
+    final settingTime = ref.read(settingTimeProvider);
+    final remainingTime = ref.read(remainingTimeProvider);
+    // タイマーが動いてなければ何もしない
+    if (ref.read(timerProvider).isActive) {
+      debugPrint('timer is not working');
+      return;
+    }
+
+    // バックグラウンドでの経過時間
+    final backgroundDuration = DateTime.now().difference(_pausedTime).inSeconds;
+    debugPrint('background for ${backgroundDuration.toString()} seconds');
+
+    // バックグラウンドで経過した時間分進める
+    ref
+        .read(remainingTimeProvider.notifier)
+        .update((state) => remainingTime - backgroundDuration);
+    debugPrint(
+      'remainingTime is ${ref.read(remainingTimeProvider).toString()}',
+    );
+
+    // バックグラウンドで経過した時間が設定時間を超えていた場合、ポモを止める
+    if (ref.read(remainingTimeProvider) <= 0) {
+      debugPrint('over');
+      ref
+          .read(pomoViewModelProvider.notifier)
+          .stopPomo(context, ref, isInterruption: true);
+      debugPrint(ref.read(displayTimeProvider).toString());
+      return;
+    }
+
+    // ポモを再開する
+    ref.read(pomoViewModelProvider.notifier).restartPomo(context, ref);
+
+    // プログレスバーを進める
+    ref.read(progressProvider.notifier).update(
+          (state) =>
+              (settingTime - ref.read(remainingTimeProvider)) / settingTime,
+        );
+    debugPrint('resumed!');
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      // バックグラウンドに遷移した時
+      _handlePaused(ref);
+    } else if (state == AppLifecycleState.resumed) {
+      // フォアグラウンドに復帰した時
+      _handleResumed(ref);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final percent = ref.watch(progressProvider);
     final displayTime = ref.watch(displayTimeProvider);
 
     final minute = displayTime ~/ 60;
     final second = displayTime - (minute * 60);
-
-    useEffect(
-      () {
-        WidgetsBinding.instance.addObserver(this);
-        ref.read(timerProvider).cancel();
-        return null;
-      },
-      const [],
-    );
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,

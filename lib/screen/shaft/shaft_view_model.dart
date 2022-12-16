@@ -43,7 +43,7 @@ class ShaftViewModel extends Notifier<ShaftState> {
   }
 
   /// ログをカウントする
-  Future<void> countLog() async {
+  Future<void> countLog(int time) async {
     final box = await Hive.openBox<Shaft>('shaftsBox');
     late final Shaft? log;
 
@@ -56,7 +56,7 @@ class ShaftViewModel extends Notifier<ShaftState> {
       ),
     );
 
-    log!.totalTime += 1;
+    log!.totalTime += time;
     await box.put(state.name, log);
   }
 
