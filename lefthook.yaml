@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  commands:
+    linter:
+      run: dart fix --apply lib && git add {staged_files}
+    import_sorter:
+      glob: '*.dart'
+      run: fvm flutter pub run import_sorter:main {staged_files} && git add {staged_files}
+    formatter:
+      glob: '*.dart'
+      run: dart format {staged_files} && git add {staged_files}
+    prettier:
+      run: npm run prettier && git add {staged_files}
