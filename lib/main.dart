@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // Package imports:
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,7 +23,22 @@ Future<void> main() async {
   await Hive.openBox<Shaft>('shaftsBox');
   await Hive.openBox<ShaftState>('shaftStatesBox');
   await _setupTimeZone();
-  runApp(const ProviderScope(child: MyApp()));
+  final flnp = FlutterLocalNotificationsPlugin();
+  const initializationSettings = InitializationSettings(
+    iOS: DarwinInitializationSettings(),
+    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+  );
+  await flnp.initialize(initializationSettings).then(
+        (_) => flnp.show(
+          0,
+          'テスト通知です',
+          'ポモ終了時に通知をお知らせします。',
+          const NotificationDetails(
+            android: AndroidNotificationDetails('channel_id', 'channel_name'),
+          ),
+        ),
+      );
+  return runApp(const ProviderScope(child: MyApp()));
 }
 
 // タイムゾーンを設定する
