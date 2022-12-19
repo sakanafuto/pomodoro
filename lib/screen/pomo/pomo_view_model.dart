@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:pomodoro/component/utils.dart';
+import 'package:pomodoro/constant/sound.dart';
 import 'package:pomodoro/model/shaft/shaft.dart';
 import 'package:pomodoro/model/shaft/shaft_state.dart';
 import 'package:pomodoro/provider/pomo_provider.dart';
@@ -85,6 +86,7 @@ class PomoViewModel extends Notifier<int> {
     ref.read(remainingTimeProvider.notifier).update((state) => 0);
 
     Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
+    se.playSe(SeSoundIds.phone1);
   }
 
   /// タイマーのロジックを担う。
@@ -118,16 +120,11 @@ class PomoViewModel extends Notifier<int> {
                 ref.read(progressProvider.notifier).state += unitOfProgress;
               }
 
-              // 1 分ごとにログを蓄積する。
-              // if (logSecond == 60) {
-              //   ref.read(shaftViewModelProvider.notifier).countLog();
-              //   logSecond = 0;
-              // }
-
               // プログレスが 1.0 を超えるか、ディスプレイの数値が 0 になった場合、タイマーを終了する。
               if (1.0 <= progress ||
                   ref.watch(displayTimeProvider.notifier).state == 0) {
                 stopPomo(context, ref, isInterruption: true);
+                se.playSe(SeSoundIds.bird1);
               }
             },
           ),
