@@ -41,14 +41,7 @@ class DrawerScreen extends HookConsumerWidget {
                     ),
                   ),
                   onPressed: () async {
-                    final phone1Id = await rootBundle
-                        .load('assets/se/phone1.mp3')
-                        .then(pool.load);
-
-                    if (phone1Id > 0 && isIos) {
-                      await pool.stop(phone1Id);
-                    }
-                    await pool.play(phone1Id);
+                    await playPool(ref);
 
                     final box = await Hive.openBox<Shaft>('shaftsBox');
 

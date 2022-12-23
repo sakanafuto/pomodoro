@@ -62,19 +62,19 @@ class PomoViewModel extends Notifier<int> {
   }
 
   /// タイマーを終了する。
-  Future<void> stopPomo(
+  void stopPomo(
     BuildContext context,
     WidgetRef ref, {
     required bool isInterruption,
-  }) async {
+  }) {
     final settingTime = ref.watch(settingTimeProvider);
 
     if (isInterruption) {
-      await ref
+      ref
           .read(shaftViewModelProvider.notifier)
           .countLog(settingTime.toDouble() ~/ 60);
     } else {
-      await ref.read(shaftViewModelProvider.notifier).countLog(
+      ref.read(shaftViewModelProvider.notifier).countLog(
             (ref.read(settingTimeProvider) - ref.read(remainingTimeProvider))
                     .toDouble() ~/
                 60,
@@ -92,13 +92,13 @@ class PomoViewModel extends Notifier<int> {
   }
 
   /// タイマーのロジックを担う。
-  Future<void> startTimer(
+  void startTimer(
     BuildContext context,
     WidgetRef ref,
     double progress,
     double unitOfProgress,
     int settingTime,
-  ) async {
+  ) {
     final progressBar = ref.watch(progressProvider);
     // PomoState を working に変更する。
     changePomoWorking(ref);
@@ -127,14 +127,7 @@ class PomoViewModel extends Notifier<int> {
                   ref.watch(displayTimeProvider.notifier).state == 0) {
                 stopPomo(context, ref, isInterruption: true);
 
-                final phone1Id = await rootBundle
-                    .load('assets/se/phone1.mp3')
-                    .then(pool.load);
-
-                if (phone1Id > 0 && isIos) {
-                  await pool.stop(phone1Id);
-                }
-                await pool.play(phone1Id);
+                await playPool(ref);
               }
             },
           ),
