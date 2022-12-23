@@ -3,6 +3,7 @@ import 'dart:async';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_picker/flutter_picker.dart';
@@ -61,22 +62,24 @@ class PomoViewModel extends Notifier<int> {
   }
 
   /// タイマーを終了する。
-  void stopPomo(
+  Future<void> stopPomo(
     BuildContext context,
     WidgetRef ref, {
     required bool isInterruption,
-  }) {
+  }) async {
     final settingTime = ref.watch(settingTimeProvider);
 
-    isInterruption
-        ? ref
-            .read(shaftViewModelProvider.notifier)
-            .countLog(settingTime.toDouble() ~/ 60)
-        : ref.read(shaftViewModelProvider.notifier).countLog(
-              (ref.read(settingTimeProvider) - ref.read(remainingTimeProvider))
-                      .toDouble() ~/
-                  60,
-            );
+    if (isInterruption) {
+      await ref
+          .read(shaftViewModelProvider.notifier)
+          .countLog(settingTime.toDouble() ~/ 60);
+    } else {
+      await ref.read(shaftViewModelProvider.notifier).countLog(
+            (ref.read(settingTimeProvider) - ref.read(remainingTimeProvider))
+                    .toDouble() ~/
+                60,
+          );
+    }
 
     // PomoState を stopping にする。
     changePomoStopping(ref);
@@ -86,17 +89,16 @@ class PomoViewModel extends Notifier<int> {
     ref.read(remainingTimeProvider.notifier).update((state) => 0);
 
     Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
-    se.playSe(SeSoundIds.phone1);
   }
 
   /// タイマーのロジックを担う。
-  void startTimer(
+  Future<void> startTimer(
     BuildContext context,
     WidgetRef ref,
     double progress,
     double unitOfProgress,
     int settingTime,
-  ) {
+  ) async {
     final progressBar = ref.watch(progressProvider);
     // PomoState を working に変更する。
     changePomoWorking(ref);
@@ -104,7 +106,7 @@ class PomoViewModel extends Notifier<int> {
           (state) => Timer.periodic(
             // 1 秒間隔で進行する。
             const Duration(seconds: 1),
-            (Timer timer) {
+            (Timer timer) async {
               debugPrint('count');
               // 毎秒ディスプレイの数値をカウントダウンする。
               ref.read(displayTimeProvider.notifier).state--;
@@ -124,7 +126,15 @@ class PomoViewModel extends Notifier<int> {
               if (1.0 <= progress ||
                   ref.watch(displayTimeProvider.notifier).state == 0) {
                 stopPomo(context, ref, isInterruption: true);
-                se.playSe(SeSoundIds.bird1);
+
+                final phone1Id = await rootBundle
+                    .load('assets/se/phone1.mp3')
+                    .then(pool.load);
+
+                if (phone1Id > 0 && isIos) {
+                  await pool.stop(phone1Id);
+                }
+                await pool.play(phone1Id);
               }
             },
           ),
